@@ -19,7 +19,7 @@ const Hero = () => {
         <div className="max-w-3xl mx-auto text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-6 animate-slide-up text-balance">
-            Simplifica tus trámites con expertos a tu lado
+            La forma más sencilla de no perder subvenciones para tu negocio
           </h1>
 
           {/* Subtitle */}

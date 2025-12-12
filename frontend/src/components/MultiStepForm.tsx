@@ -235,7 +235,6 @@ const MultiStepForm = () => {
         cif_nif: cif_nifNormalizada,
         email_facturacion: formData.email_facturacion.trim(),
         nombre_titular: formData.nombre_titular.trim(),
-        iban_titular: cleanIban,
         domicilio_fiscal: formData.domicilio_fiscal.trim(),
         codigo_postal: formData.codigo_postal.trim(),
         ciudad: formData.ciudad.trim(),
