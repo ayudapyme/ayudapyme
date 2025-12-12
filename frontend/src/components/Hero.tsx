@@ -2,9 +2,9 @@ import { CheckCircle } from "lucide-react";
 
 const Hero = () => {
   const benefits = [
-    "Proceso 100% online",
-    "Respuesta en 24h",
-    "Expertos a tu servicio",
+    "Sin riesgo",
+    "Hacemos todo por ti",
+    "Solo pagas si ganamos",
   ];
 
   return (
@@ -19,13 +19,13 @@ const Hero = () => {
         <div className="max-w-3xl mx-auto text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-6 animate-slide-up text-balance">
-            La forma más sencilla de no perder subvenciones para tu negocio
+            No pierdas más subvenciones para tu negocio
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Completa nuestro formulario en menos de 5 minutos y deja que nos encarguemos de todo. 
-            Sin complicaciones, sin esperas.
+           Olvídate del papeleo: buscamos, analizamos y tramitamos todo por ti.
+           Solo pagas si te conceden la ayuda y con registrarte es suficiente.
           </p>
 
           {/* Benefits */}
