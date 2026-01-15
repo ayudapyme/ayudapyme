@@ -9,7 +9,7 @@ const Privacidad = () => {
           Política de Privacidad
         </h1>
         <p className="text-primary-foreground/80 mt-4 max-w-2xl mx-auto text-lg">
-          Información sobre cómo gestionamos tus datos personales en Gestoría Express.
+          Información sobre cómo gestionamos tus datos personales en Ayuda Pyme.
         </p>
       </header>
 
@@ -78,9 +78,9 @@ const Privacidad = () => {
               Para ejercer tus derechos o solicitar información adicional:
             </p>
             <p className="mt-2 font-semibold">
-              Email: info@gestoriaexpress.es  
+              Email: admin@ayudapyme.es  
               <br />
-              Teléfono: +34 900 123 456
+              Teléfono: +34 601 64 63 62 / +34 611 08 59 21
             </p>
           </section>
 
