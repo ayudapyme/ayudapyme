@@ -29,15 +29,15 @@ const FAQ = () => {
     },
     {
       question: "¿Ofrecéis asesoramiento fiscal?",
-      answer: "Sí, además de la gestión administrativa, ofrecemos asesoramiento fiscal personalizado para ayudarte a optimizar tu situación tributaria de forma legal y eficiente.",
+      answer: "No, nosotros nos centramos en darte la mejor experiencia para la localizacion y gestión de subvenciones.",
     },
     {
       question: "¿Qué garantías ofrecéis?",
       answer: "Garantizamos la confidencialidad de tus datos, el cumplimiento de todas las normativas vigentes y la máxima profesionalidad en cada gestión. Si no quedas satisfecho con nuestro servicio, te devolvemos el importe.",
     },
     {
-      question: "¿Puedo cancelar el servicio en cualquier momento?",
-      answer: "Sí, puedes cancelar tu suscripción o servicio en cualquier momento sin penalizaciones. Solo se facturarán los servicios ya realizados hasta la fecha de cancelación.",
+      question: "¿Es una suscripción? ¿Tiene algún coste oculto?",
+      answer: "No, es un servicio 100% a exito. Solo pagas si conseguimos la subvención para ti. No hay costes iniciales ni cuotas mensuales. Solo se cobra si firmaste el contrato para tramitar una subvención en particular y se concede la misma.",
     },
   ];
 

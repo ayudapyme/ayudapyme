@@ -22,8 +22,8 @@ const Footer = () => {
             </div>
 
             <p className="text-background/70 text-sm leading-relaxed">
-              Tu gestoría de confianza para todos los trámites administrativos y fiscales. 
-              Simplificamos la burocracia para que tú te centres en lo importante.
+              Tu agencia de subvenciones. Más dinero, menos preocupaciones.
+              Simplificamos el papeleo para que tú te centres en lo importante.
             </p>
           </div>
 
@@ -54,9 +54,11 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold mb-4">Contacto</h4>
             <ul className="space-y-2 text-sm text-background/70">
-              <li>info@ayudapyme.es</li>
-              <li>+34 900 123 456</li>
-              <li>Calle Principal 123, Madrid</li>
+              <li>admin@ayudapyme.es</li>
+              <li>+34 601 64 63 62</li>
+              <li>+34 611 08 59 21</li>
+
+              <li>San Luis, Coruña</li>
             </ul>
           </div>
         </div>
@@ -66,9 +68,7 @@ const Footer = () => {
           <p className="text-background/60 text-sm">
             © {currentYear} AyudaPyme. Todos los derechos reservados.
           </p>
-          <p className="text-background/60 text-sm">
-            CIF: B12345678 | Registro Mercantil de Madrid
-          </p>
+         
         </div>
       </div>
     </footer>

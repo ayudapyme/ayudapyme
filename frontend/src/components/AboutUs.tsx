@@ -5,12 +5,12 @@ const AboutUs = () => {
     {
       icon: Users,
       title: "Equipo Experto",
-      description: "Profesionales con más de 15 años de experiencia en gestión administrativa y fiscal.",
+      description: "Profesionales con años de experiencia en gestión administrativa.",
     },
     {
       icon: Award,
       title: "Calidad Garantizada",
-      description: "Compromiso con la excelencia y la satisfacción de nuestros clientes en cada trámite.",
+      description: "Compromiso con la excelencia y la satisfacción de nuestros clientes en cada subvención.",
     },
     {
       icon: Clock,
@@ -33,13 +33,16 @@ const AboutUs = () => {
             Quiénes somos
           </span>
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-6">
-            Tu gestoría de confianza
+           Una agencia dedicada a localizar y tramitar subvenciones.
+
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            En Gestoría Express nos dedicamos a simplificar la vida de autónomos y empresas. 
-            Llevamos años ayudando a nuestros clientes a gestionar sus obligaciones administrativas 
-            y fiscales de manera eficiente, para que puedan centrarse en lo que realmente importa: 
-            hacer crecer su negocio.
+             En Ayuda Pyme nos dedicamos a facilitar todo el trámite para conseguir
+             subvenciones para autónomos y pymes. Nosotros, mediante los datos de la empresa,
+             localizamos todas las subvenciones y seleccionamos entre ellas las que sean adecuadas
+             para cada negocio. Con el permiso de la empresa, las tramitamos de forma que la
+             obtenciónde la subvención cause las mínimas molestias al empresario.
+             
           </p>
         </div>
 
@@ -71,31 +74,33 @@ const AboutUs = () => {
                 Nuestra misión
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Facilitar la gestión administrativa y fiscal de autónomos, pymes y grandes empresas, 
-                ofreciendo un servicio personalizado, ágil y de máxima calidad.
+               Ayudar a autónomos y pymes a no perder subvenciones por falta de información.
+               Analizamos convocatorias públicas, identificamos las ayudas que encajan con cada negocio y explicamos de forma clara qué puede solicitar, cómo y cuándo.
+
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Creemos que la burocracia no debe ser un obstáculo para el crecimiento de tu negocio. 
-                Por eso, nos encargamos de todos los trámites para que tú puedas dedicar tu tiempo 
-                y energía a lo que mejor sabes hacer.
+                Además, gestionamos la tramitación de la subvención, coordinando toda la documentación necesaria y el proceso administrativo para que el cliente no tenga que enfrentarse a la burocracia.
+                Nuestro objetivo es que ninguna empresa deje pasar dinero público por desconocimiento, falta de tiempo o complejidad administrativa.
+              
+
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">+500</div>
-                <div className="text-muted-foreground text-sm">Clientes satisfechos</div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">+1000</div>
+                <div className="text-muted-foreground text-sm">Subvenciones analizadas</div>
               </div>
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">15+</div>
-                <div className="text-muted-foreground text-sm">Años de experiencia</div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">24/7</div>
+                <div className="text-muted-foreground text-sm">Convocatorias monitorizadas</div>
               </div>
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">98%</div>
-                <div className="text-muted-foreground text-sm">Tasa de éxito</div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">     En curso </div>
+                <div className="text-muted-foreground text-sm">Tramitaciones gestionadas</div>
               </div>
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">24h</div>
-                <div className="text-muted-foreground text-sm">Tiempo de respuesta</div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2"> Solo si hay éxito</div>
+                <div className="text-muted-foreground text-sm">Modelo de pago</div>
               </div>
             </div>
           </div>

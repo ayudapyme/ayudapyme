@@ -458,7 +458,7 @@ const MultiStepForm = () => {
                     ¡Formulario enviado!
                   </h2>
                   <p className="text-foreground text-lg mb-2">
-                    Muy pronto nuestro equipo se pondrá en contacto contigo.
+                    Muy pronto nuestro equipo se pondrá en contacto contigo por correo electrónico o por teléfono.
                   </p>
                   <p className="text-muted-foreground text-base max-w-md mx-auto">
                     Gracias por confiar en nosotros. Revisaremos tu solicitud y te responderemos lo antes posible.
@@ -500,12 +500,12 @@ const MultiStepForm = () => {
                         htmlFor="email-facturacion"
                         className="block text-sm font-medium text-foreground mb-2"
                       >
-                        Email para facturación *
+                        Email
                       </label>
                       <input
                         type="email"
                         id="email-facturacion"
-                        name="email_facturacion"
+                        name="email"
                         required
                         value={formData.email_facturacion}
                         onChange={handleInputChange}
@@ -519,7 +519,7 @@ const MultiStepForm = () => {
                         htmlFor="nombre-titular"
                         className="block text-sm font-medium text-foreground mb-2"
                       >
-                        Nombre del titular de la cuenta *
+                        Nombre del responsable
                       </label>
                       <input
                         type="text"
@@ -528,26 +528,7 @@ const MultiStepForm = () => {
                         required
                         value={formData.nombre_titular}
                         onChange={handleInputChange}
-                        placeholder="Nombre completo del titular"
-                        className="input-field"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="iban-titular"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        IBAN *
-                      </label>
-                      <input
-                        type="text"
-                        id="iban-titular"
-                        name="iban_titular"
-                        required
-                        value={formData.iban_titular}
-                        onChange={handleInputChange}
-                        placeholder="ES00 0000 0000 0000 0000 0000"
+                        placeholder="Nombre completo del responsable"
                         className="input-field"
                       />
                     </div>

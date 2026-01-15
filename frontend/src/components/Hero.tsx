@@ -19,13 +19,12 @@ const Hero = () => {
         <div className="max-w-3xl mx-auto text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-6 animate-slide-up text-balance">
-            No pierdas más subvenciones para tu negocio
+            No pierdas más oportunidades para tu negocio
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-           Olvídate del papeleo: buscamos, analizamos y tramitamos todo por ti.
-           Solo pagas si te conceden la ayuda y con registrarte es suficiente.
+           Te ayudaremos a encontrar todas las subvenciones disponibles para tu empresa sin que tengas que hacer prácticamente nada.
           </p>
 
           {/* Benefits */}
@@ -44,7 +43,7 @@ const Hero = () => {
           {/* CTA Button */}
           <div className="animate-slide-up mb-6 md:mb-0" style={{ animationDelay: "0.3s" }}>
             <a href="#formulario" className="btn-hero group">
-              Comenzar ahora
+              Solicitar sin compromiso
             </a>
           </div>
         </div>
