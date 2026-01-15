@@ -20,8 +20,7 @@ const Privacidad = () => {
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">1. Responsable del tratamiento</h2>
             <p>
-              Gestoría Express es responsable del tratamiento de los datos personales que nos facilitas
-              al utilizar nuestros servicios y formularios.
+              El responsable del tratamiento de los datos personales es la plataforma de búsqueda y análisis de subvenciones públicas para empresas, autónomos y emprendedores.
             </p>
           </section>
 
@@ -30,10 +29,9 @@ const Privacidad = () => {
             <p>Podemos recopilar y procesar los siguientes datos:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>Datos de contacto (nombre, email, teléfono).</li>
-              <li>Datos de identificación fiscal (NIF/CIF/NIE).</li>
-              <li>Datos de actividad empresarial.</li>
-              <li>Datos necesarios para trámites administrativos.</li>
-              <li>Datos bancarios para domiciliaciones SEPA.</li>
+              <li>Datos de identificación fiscal y empresarial.</li>
+              <li>Datos sobre actividad profesional o empresarial.</li>
+              <li>Datos necesarios para la gestión de solicitudes de subvenciones.</li>
             </ul>
           </section>
 
@@ -41,18 +39,17 @@ const Privacidad = () => {
             <h2 className="text-2xl font-heading font-semibold mb-3">3. Finalidad del tratamiento</h2>
             <p>Tratamos tus datos con las siguientes finalidades:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Gestionar tu solicitud enviada mediante nuestros formularios.</li>
-              <li>Realizar trámites administrativos y fiscales.</li>
-              <li>Facturación y comunicación relacionada con los servicios.</li>
-              <li>Mejorar la experiencia de usuario y nuestros servicios.</li>
+              <li>Gestionar tu acceso y uso de la plataforma.</li>
+              <li>Notificarte sobre subvenciones y convocatorias de interés.</li>
+              <li>Orientarte sobre requisitos y trámites relacionados.</li>
+              <li>Mejorar el servicio y la experiencia de usuario.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">4. Base legal del tratamiento</h2>
             <p>
-              La base jurídica es tu consentimiento, el cumplimiento de obligaciones legales
-              y la ejecución de servicios solicitados.
+              La base jurídica es tu consentimiento, el cumplimiento de obligaciones legales y la ejecución de los servicios ofrecidos por la plataforma.
             </p>
           </section>
 

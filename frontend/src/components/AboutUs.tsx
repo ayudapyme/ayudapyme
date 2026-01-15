@@ -95,11 +95,11 @@ const AboutUs = () => {
                 <div className="text-muted-foreground text-sm">Convocatorias monitorizadas</div>
               </div>
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2">     En curso </div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2"> En curso </div>
                 <div className="text-muted-foreground text-sm">Tramitaciones gestionadas</div>
               </div>
               <div className="bg-card p-6 rounded-xl text-center">
-                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2"> Solo si hay éxito</div>
+                <div className="text-3xl md:text-4xl font-heading font-bold text-primary mb-2"> Por éxito</div>
                 <div className="text-muted-foreground text-sm">Modelo de pago</div>
               </div>
             </div>
