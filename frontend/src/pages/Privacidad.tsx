@@ -11,6 +11,9 @@ const Privacidad = () => {
         <p className="text-primary-foreground/80 mt-4 max-w-2xl mx-auto text-lg">
           Información sobre cómo gestionamos tus datos personales en Ayuda Pyme.
         </p>
+        <p className="text-primary-foreground/80 mt-2 text-base font-semibold">
+          Última actualización: 15 de enero de 2026
+        </p>
       </header>
 
       {/* Content section */}

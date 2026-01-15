@@ -20,7 +20,7 @@ const Terminos = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-foreground leading-relaxed space-y-6 text-base">
 
           <h2 className="text-2xl font-heading font-semibold">TÉRMINOS Y CONDICIONES DE USO</h2>
-          <p><strong>Última actualización: [fecha]</strong></p>
+          <p><strong>Última actualización: 15 de enero de 2026</strong></p>
 
           <h3 className="text-xl font-semibold mt-6">1. Objeto del servicio</h3>
           <p>
