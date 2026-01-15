@@ -470,10 +470,10 @@ const MultiStepForm = () => {
               {currentStep === 3 && !isSubmitted && (
                 <div className="animate-fade-in">
                   <h3 className="text-lg font-heading font-semibold text-foreground mb-2 text-center">
-                    Datos para domiciliación SEPA
+                    Datos empresa
                   </h3>
                   <p className="text-muted-foreground text-sm text-center mb-5">
-                    Estos datos son necesarios para procesar el pago de forma segura.
+                    Estos datos son necesarios para encontrar las mejores subvenciones para ti.
                   </p>
                   <div className="space-y-4">
                     <div>
