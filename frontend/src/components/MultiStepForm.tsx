@@ -608,10 +608,25 @@ const MultiStepForm = () => {
                             target="_blank"
                             className="text-primary hover:underline font-medium"
                           >
-                            términos y condiciones
-                          </a>{" "}
-                          y la política de privacidad. *
-                        </span>
+<span className="text-sm text-muted-foreground">
+  He leído y acepto los{" "}
+  <a
+    href="/terminos"
+    target="_blank"
+    className="text-primary hover:underline font-medium"
+  >
+    términos y condiciones
+  </a>{" "}
+  y la{" "}
+  <a
+    href="/privacidad"
+    target="_blank"
+    className="text-primary hover:underline font-medium"
+  >
+    política de privacidad
+  </a>
+  . *
+</span>
                       </label>
                     </div>
                   </div>

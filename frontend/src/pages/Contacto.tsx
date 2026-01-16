@@ -1,112 +1,86 @@
-import { Mail, MessageSquare, Send } from "lucide-react";
-import { useState } from "react";
-import Footer from "@/components/Footer";
+import { Link } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const Contacto = () => {
-  const [email, setEmail] = useState("");
-  const [mensaje, setMensaje] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-  };
-
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="hero-gradient py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary-foreground mb-4">
-            Contacta con nosotros
-          </h1>
-          <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-            ¿Tienes alguna pregunta o consulta? Escríbenos y te responderemos lo antes posible.
-          </p>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Header />
 
-      {/* Form Section */}
-      <section className="py-12 md:py-20 flex-1">
-        <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-card rounded-2xl border border-border shadow-lg p-6 md:p-8">
-            {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Email Field */}
-                <div>
-                  <label
-                    htmlFor="contact_email"
-                    className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2"
-                  >
-                    <Mail className="w-4 h-4 text-primary" />
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="contact_email"
-                    name="contact_email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                    className="input-field"
-                  />
-                </div>
+      <main className="flex-1 pt-24 md:pt-32">
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+              Contacta con nosotros
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Si tienes dudas sobre las subvenciones, el proceso o quieres que
+              revisemos tu caso, escríbenos o solicita una llamada. Estamos
+              para que no pierdas ninguna oportunidad para tu negocio.
+            </p>
+          </div>
 
-                {/* Message Field */}
-                <div>
-                  <label
-                    htmlFor="contact_mensaje"
-                    className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2"
-                  >
-                    <MessageSquare className="w-4 h-4 text-primary" />
-                    Mensaje *
-                  </label>
-                  <textarea
-                    id="contact_mensaje"
-                    name="contact_mensaje"
-                    required
-                    maxLength={2000}
-                    rows={8}
-                    value={mensaje}
-                    onChange={(e) => setMensaje(e.target.value)}
-                    placeholder="Escribe tu mensaje aquí..."
-                    className="input-field resize-none"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 text-right">
-                    {mensaje.length}/2000 caracteres
-                  </p>
-                </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Horario de llamadas */}
+            <div className="rounded-2xl bg-card/90 border border-border/40 shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-3">
+                Horario de llamadas
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Podemos llamarte o atender tus llamadas en el siguiente horario
+                (hora peninsular española):
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li>Lunes a viernes: 10:00 – 14:00</li>
+                <li>Lunes a viernes: 16:00 – 19:00</li>
+              </ul>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Indica tu disponibilidad en el formulario y ajustaremos la
+                llamada lo máximo posible.
+              </p>
+            </div>
 
-                {/* Submit Button */}
-                <button type="submit" className="btn-primary w-full text-lg py-4">
-                  Enviar
-                  <Send className="ml-2 w-5 h-5" />
-                </button>
-              </form>
-            ) : (
-              <div className="text-center py-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 mb-6">
-                  <Send className="w-8 h-8 text-accent" />
-                </div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-4">
-                  ¡Mensaje enviado!
+            {/* Correo electrónico */}
+            <div className="rounded-2xl bg-card/90 border border-border/40 shadow-md p-6 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-3">
+                  Correo electrónico
                 </h2>
-                <p className="text-muted-foreground">
-                  Gracias por contactarnos. Te responderemos lo antes posible.
+                <p className="text-sm text-muted-foreground mb-4">
+                  Si lo prefieres, puedes escribirnos directamente. Te
+                  responderemos con una valoración clara y sin compromiso.
+                </p>
+                <a
+                  href="mailto:info@ayudapyme.es"
+                  className="inline-flex items-center font-medium underline underline-offset-4 hover:no-underline"
+                >
+                  info@ayudapyme.es
+                </a>
+              </div>
+              <div className="mt-6">
+                <p className="text-xs text-muted-foreground">
+                  Cuanta más información nos des sobre tu empresa (sector,
+                  tamaño, ubicación), más precisa podrá ser nuestra respuesta.
                 </p>
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Back Link */}
-          <div className="text-center mt-8">
-            <a href="/" className="text-primary hover:underline font-medium">
-              ← Volver a la página principal
-            </a>
+          {/* CTA hacia el formulario */}
+          <div className="mt-10 text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              También puedes rellenar nuestro formulario para que estudiemos tu
+              caso de forma detallada.
+            </p>
+            <Link
+              to="/#formulario"
+              className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm md:text-base font-semibold bg-primary text-primary-foreground hover:opacity-90 transition"
+            >
+              Ir al formulario
+            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </div>
