@@ -77,19 +77,6 @@ const FAQ = () => {
             ))}
           </Accordion>
         </div>
-
-        {/* Contact CTA */}
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-4">
-            ¿Tienes más preguntas?
-          </p>
-          <a
-            href="/contacto"
-            className="btn-primary"
-          >
-            Contáctanos
-          </a>
-        </div>
       </div>
     </section>
   );
