@@ -205,10 +205,9 @@ const MultiStepForm = () => {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+    const webhookUrl = "https://ayudapyme.app.n8n.cloud/webhook/7c1626a4-96df-4d4b-ad2c-675afd64b257";
     const cif_nifNormalizada = normalizeId(formData.cif_nif);
     try {
-      // Enviar formulario completo a n8n vía backend
       const payload = {
         tamano_empresa: getCompanySizeValue(companySize),
         actividad: formData.actividad.trim(),
@@ -222,11 +221,15 @@ const MultiStepForm = () => {
         acepta_terminos: true,
         origen: "entrevista-web",
       };
-      await fetch(`${apiBase}/api/formulario/alta`, {
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Error al enviar datos al webhook.");
+      }
       setIsSubmitted(true);
       setCurrentStep(3);
     } catch (err: any) {
