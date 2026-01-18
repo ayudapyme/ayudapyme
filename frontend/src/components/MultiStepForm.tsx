@@ -505,7 +505,7 @@ const MultiStepForm = () => {
                       <input
                         type="email"
                         id="email-facturacion"
-                        name="email"
+                        name="email_facturacion"
                         required
                         value={formData.email_facturacion}
                         onChange={handleInputChange}
