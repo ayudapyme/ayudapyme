@@ -621,10 +621,25 @@ const MultiStepForm = () => {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={prevStep} className="btn-secondary">
-                      <ArrowLeft className="mr-2 w-4 h-4" />
-                      Anterior
-                    </button>
+                    <span className="text-sm text-muted-foreground">
+                      He leído y acepto los{" "}
+                      <a
+                        href="/terminos"
+                        target="_blank"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        términos y condiciones
+                      </a>{" "}
+                      y la{" "}
+                      <a
+                        href="/privacidad"
+                        target="_blank"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        política de privacidad
+                      </a>
+                      . *
+                    </span>
                     <button
                       type="button"
                       onClick={handleSubmit}

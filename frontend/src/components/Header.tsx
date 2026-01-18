@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,11 +15,19 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { href: "#inicio", label: "Inicio" },
-    { href: "#quienes-somos", label: "Quiénes somos" },
-    { href: "#faq", label: "Preguntas frecuentes" },
-    { href: "#formulario", label: "Formulario" },
+    { href: "#inicio", label: "Inicio", type: "hash" as const },
+    { href: "#quienes-somos", label: "Quiénes somos", type: "hash" as const },
+    { href: "#faq", label: "Preguntas frecuentes", type: "hash" as const },
+    { href: "#formulario", label: "Formulario", type: "hash" as const },
+    { href: "/contacto", label: "Contactar", type: "route" as const },
   ];
+
+  const linkBaseClasses = (isScrolled: boolean) =>
+    `font-semibold transition-colors ${
+      isScrolled
+        ? "text-foreground hover:text-primary"
+        : "text-white/90 hover:text-white"
+    }`;
 
   return (
     <header
@@ -30,38 +39,42 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-
-          {/* LOGO CAMBIANTE */}
-          <a href="#inicio" className="flex items-center gap-2">
+          {/* LOGO */}
+          <Link to="/" className="flex items-center gap-2">
             <img
               src={isScrolled ? "/logo-dark.png" : "/logo-light.png"}
               alt="AyudaPyme logo"
               className="w-10 h-10 object-contain transition-all duration-300"
             />
 
-            {/* TEXTO SOLO EN MODO OSCURO (sin scroll) */}
             {!isScrolled && (
               <span className="font-heading font-bold text-xl text-white">
                 AyudaPyme
               </span>
             )}
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`font-semibold transition-colors ${
-                  isScrolled
-                    ? "text-foreground hover:text-primary"
-                    : "text-white/90 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.type === "hash" ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={linkBaseClasses(isScrolled)}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={linkBaseClasses(isScrolled)}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -84,20 +97,35 @@ const Header = () => {
             }`}
           >
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={`font-semibold py-2 transition-colors ${
-                    isScrolled
-                      ? "text-foreground hover:text-primary"
-                      : "text-white hover:text-white/80"
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.type === "hash" ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className={`font-semibold py-2 transition-colors ${
+                      isScrolled
+                        ? "text-foreground hover:text-primary"
+                        : "text-white hover:text-white/80"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={`font-semibold py-2 transition-colors ${
+                      isScrolled
+                        ? "text-foreground hover:text-primary"
+                        : "text-white hover:text-white/80"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
           </nav>
         )}
