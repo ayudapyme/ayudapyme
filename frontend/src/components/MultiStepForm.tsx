@@ -259,7 +259,7 @@ const MultiStepForm = () => {
   };
 
   return (
-    <section id="formulario" className="section-padding bg-background">
+    <section id="formulario" className="section-padding bg-muted">
       <div className="container-custom">
         {/* Form Container */}
         <div className="max-w-[650px] mx-auto">

@@ -15,7 +15,7 @@ export default function ContactSection() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl bg-neutral-900/95 border border-border/40 shadow-md p-6 text-white">
+          <div className="rounded-2xl bg-muted border border-border/40 shadow-md p-6 text-foreground">
             <h3 className="text-xl font-semibold mb-3">Horario de llamadas</h3>
             <p className="text-sm text-neutral-300 mb-2">(hora peninsular española):</p>
             <ul className="space-y-1 text-sm">
@@ -27,7 +27,7 @@ export default function ContactSection() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-neutral-900/95 border border-border/40 shadow-md p-6 flex flex-col justify-between text-white">
+          <div className="rounded-2xl bg-muted border border-border/40 shadow-md p-6 flex flex-col justify-between text-foreground">
             <div>
               <h3 className="text-xl font-semibold mb-3">Correo electrónico</h3>
               <p className="text-sm text-neutral-300 mb-4">
@@ -43,9 +43,9 @@ export default function ContactSection() {
             <p className="mt-6 text-xs text-neutral-300">
               Cuanta más información (sector, tamaño, ubicación), más precisa será la respuesta.
             </p>
-            <div className="mt-6 p-3 rounded bg-neutral-800/80 border border-neutral-700">
-              <div className="text-xs text-neutral-400 mb-1">Ejemplo de datos de prueba:</div>
-              <ul className="text-xs text-neutral-200 list-disc pl-4">
+            <div className="mt-6 p-3 rounded bg-muted/80 border border-border/40">
+              <div className="text-xs text-muted-foreground mb-1">Ejemplo de datos de prueba:</div>
+              <ul className="text-xs text-foreground list-disc pl-4">
                 <li>Nombre: Juan Pérez</li>
                 <li>Email: juan@ejemplo.com</li>
                 <li>Teléfono: 600 123 456</li>
