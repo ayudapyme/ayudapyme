@@ -1,23 +1,19 @@
 // server.js
+
 require('dotenv').config();
 const express = require('express');
-const Stripe = require('stripe');
 const cors = require('cors');
 const { randomUUID } = require('crypto');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY;
-if (!stripeSecret) {
-  console.warn('[stripe] STRIPE_SECRET_KEY is not set in .env');
-}
-const stripe = Stripe(stripeSecret || '');
+
 
 app.use(cors());
 app.use(express.json());
 
-// --- Helpers para validar NIF/NIE/CIF e IBAN ---
+// --- Helpers para validar NIF/NIE/CIF --
 
 const NIF_MAP = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
