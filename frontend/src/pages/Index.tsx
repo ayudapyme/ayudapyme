@@ -4,6 +4,7 @@ import AboutUs from "@/components/AboutUs";
 import FAQ from "@/components/FAQ";
 import MultiStepForm from "@/components/MultiStepForm";
 import Footer from "@/components/Footer";
+import ContactSection from "@/components/ContactSection";
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
         <Hero />
         <AboutUs />
         <FAQ />
+        <ContactSection />
         <MultiStepForm />
       </main>
       <Footer />
