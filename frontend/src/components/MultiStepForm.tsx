@@ -620,26 +620,7 @@ const MultiStepForm = () => {
                     <p className="mt-4 text-sm text-destructive text-center">{errorMessage}</p>
                   )}
 
-                  <div className="flex justify-between mt-6">
-                    <span className="text-sm text-muted-foreground">
-                      He leído y acepto los{" "}
-                      <a
-                        href="/terminos"
-                        target="_blank"
-                        className="text-primary hover:underline font-medium"
-                      >
-                        términos y condiciones
-                      </a>{" "}
-                      y la{" "}
-                      <a
-                        href="/privacidad"
-                        target="_blank"
-                        className="text-primary hover:underline font-medium"
-                      >
-                        política de privacidad
-                      </a>
-                      . *
-                    </span>
+                  <div className="flex justify-end mt-6">
                     <button
                       type="button"
                       onClick={handleSubmit}
