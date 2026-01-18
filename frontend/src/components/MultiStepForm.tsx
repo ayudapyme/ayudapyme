@@ -19,10 +19,10 @@ interface FormData {
   cif_nif: string;
   email_facturacion: string;
   nombre_titular: string;
-  iban_titular: string;
   domicilio_fiscal: string;
   codigo_postal: string;
   ciudad: string;
+  telefono: string;
 }
 
 const NIF_MAP = "TRWAGMYFPDXBNJZSQVHLCKE";
@@ -114,10 +114,10 @@ const MultiStepForm = () => {
     cif_nif: "",
     email_facturacion: "",
     nombre_titular: "",
-    iban_titular: "",
     domicilio_fiscal: "",
     codigo_postal: "",
     ciudad: "",
+    telefono: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -173,12 +173,11 @@ const MultiStepForm = () => {
     if (!formData.email_facturacion.trim()) return "El email de facturación es obligatorio.";
     if (!isValidEmail(formData.email_facturacion)) return "Introduce un email de facturación válido.";
     if (!formData.nombre_titular.trim()) return "El nombre del titular es obligatorio.";
-    if (!formData.iban_titular.trim()) return "El IBAN es obligatorio.";
-    if (!isValidIban(formData.iban_titular)) return "Introduce un IBAN válido.";
     if (!formData.domicilio_fiscal.trim()) return "El domicilio fiscal es obligatorio.";
     if (!formData.codigo_postal.trim()) return "El código postal es obligatorio.";
     if (!/^[0-9]{4,6}$/.test(formData.codigo_postal.trim())) return "Introduce un código postal válido.";
     if (!formData.ciudad.trim()) return "La ciudad es obligatoria.";
+    if (!formData.telefono.trim()) return "El número de teléfono es obligatorio.";
 
     const termsCheckbox = document.getElementById("aceptaTerminos") as HTMLInputElement | null;
     if (!termsCheckbox || !termsCheckbox.checked) {
@@ -207,28 +206,9 @@ const MultiStepForm = () => {
     setErrorMessage(null);
 
     const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
-
-    const cleanIban = normalizeIban(formData.iban_titular);
     const cif_nifNormalizada = normalizeId(formData.cif_nif);
-
     try {
-      // 1) Enviar IBAN a Stripe vía backend
-      const ibanRes = await fetch(`${apiBase}/api/iban`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.nombre_titular.trim(),
-          email: formData.email_facturacion.trim(),
-          iban: cleanIban,
-        }),
-      });
-
-      const ibanData = await ibanRes.json();
-      if (!ibanRes.ok || !ibanData.success) {
-        throw new Error(ibanData.error || "No se pudo guardar el IBAN en Stripe.");
-      }
-
-      // 2) Enviar formulario completo a n8n vía backend
+      // Enviar formulario completo a n8n vía backend
       const payload = {
         tamano_empresa: getCompanySizeValue(companySize),
         actividad: formData.actividad.trim(),
@@ -238,16 +218,15 @@ const MultiStepForm = () => {
         domicilio_fiscal: formData.domicilio_fiscal.trim(),
         codigo_postal: formData.codigo_postal.trim(),
         ciudad: formData.ciudad.trim(),
+        telefono: formData.telefono.trim(),
         acepta_terminos: true,
         origen: "entrevista-web",
       };
-
       await fetch(`${apiBase}/api/formulario/alta`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
       setIsSubmitted(true);
       setCurrentStep(3);
     } catch (err: any) {
@@ -529,6 +508,24 @@ const MultiStepForm = () => {
                         value={formData.nombre_titular}
                         onChange={handleInputChange}
                         placeholder="Nombre completo del responsable"
+                        className="input-field"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="telefono"
+                        className="block text-sm font-medium text-foreground mb-2"
+                      >
+                        Número de teléfono *
+                      </label>
+                      <input
+                        type="tel"
+                        id="telefono"
+                        name="telefono"
+                        required
+                        value={formData.telefono}
+                        onChange={handleInputChange}
+                        placeholder="Ej: 600123456"
                         className="input-field"
                       />
                     </div>
