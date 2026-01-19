@@ -22,8 +22,8 @@ export default function ContactSection() {
             </h3>
             <p className="text-sm text-[#4b5563] mb-2">(hora peninsular española):</p>
             <ul className="space-y-1 text-base font-medium">
-              <li>Lunes a viernes: 10:00 – 14:00 <span className="ml-2 font-semibold text-primary">910 00 00 00</span></li>
-              <li>Lunes a viernes: 16:00 – 19:00 <span className="ml-2 font-semibold text-primary">910 00 00 00</span></li>
+              <li>Lunes a viernes: 10:00 – 19:00 <span className="ml-2 font-semibold text-primary">601 64 63 62</span></li>
+              <li>Lunes a viernes: 11:00 – 19:00 <span className="ml-2 font-semibold text-primary">611 08 59 21</span></li>
             </ul>
             <p className="mt-4 text-sm text-[#6b7280]">
               Indica tu disponibilidad en el formulario y ajustaremos la llamada lo máximo posible.
@@ -40,10 +40,10 @@ export default function ContactSection() {
                 Si lo prefieres, puedes escribirnos directamente.
               </p>
               <a
-                href="mailto:info@ayudapyme.es"
+                href="mailto:admin@ayudapyme.es"
                 className="inline-flex items-center font-semibold underline underline-offset-4 hover:text-primary"
               >
-                info@ayudapyme.es
+                admin@ayudapyme.es
               </a>
             </div>
             <p className="mt-6 text-xs text-[#6b7280]">
