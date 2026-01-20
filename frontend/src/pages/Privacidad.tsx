@@ -9,81 +9,95 @@ const Privacidad = () => {
           Política de Privacidad
         </h1>
         <p className="text-primary-foreground/80 mt-4 max-w-2xl mx-auto text-lg">
-          Información sobre cómo gestionamos tus datos personales en Gestoría Express.
+          Información sobre cómo gestionamos tus datos personales en AyudaPyme.
         </p>
+        <p className="text-right text-sm text-muted-foreground mt-2">Última actualización: 22/1/26</p>
       </header>
 
       {/* Content section */}
       <main className="flex-1 py-12 md:py-20">
         <div className="container-custom max-w-3xl mx-auto space-y-8 text-foreground leading-relaxed">
 
+
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">1. Responsable del tratamiento</h2>
             <p>
-              Gestoría Express es responsable del tratamiento de los datos personales que nos facilitas
-              al utilizar nuestros servicios y formularios.
+              El responsable del tratamiento de los datos es AyudaPyme. Puedes contactar para cualquier cuestión relacionada con privacidad a través del email <a href="mailto:info@ayudapyme.es" className="text-primary font-semibold hover:underline">info@ayudapyme.es</a>.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">2. Datos que recogemos</h2>
-            <p>Podemos recopilar y procesar los siguientes datos:</p>
+            <p>Recopilamos los siguientes datos a través de los formularios de la web:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Datos de contacto (nombre, email, teléfono).</li>
-              <li>Datos de identificación fiscal (NIF/CIF/NIE).</li>
-              <li>Datos de actividad empresarial.</li>
-              <li>Datos necesarios para trámites administrativos.</li>
-              <li>Datos bancarios para domiciliaciones SEPA.</li>
+              <li>Nombre y apellidos</li>
+              <li>Email</li>
+              <li>Teléfono</li>
+              <li>Identificación fiscal (NIF/CIF/NIE)</li>
+              <li>Datos de empresa y actividad</li>
+              <li>Ciudad y domicilio fiscal</li>
+              <li>Cualquier información adicional que el usuario incluya en los formularios</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">3. Finalidad del tratamiento</h2>
-            <p>Tratamos tus datos con las siguientes finalidades:</p>
+            <p>Tratamos tus datos para:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Gestionar tu solicitud enviada mediante nuestros formularios.</li>
-              <li>Realizar trámites administrativos y fiscales.</li>
-              <li>Facturación y comunicación relacionada con los servicios.</li>
-              <li>Mejorar la experiencia de usuario y nuestros servicios.</li>
+              <li>Gestionar y responder solicitudes enviadas mediante los formularios</li>
+              <li>Contactar contigo por email o teléfono para información sobre subvenciones, seguimiento o notificaciones relacionadas con el servicio</li>
+              <li>Mejorar la experiencia de usuario y la calidad del servicio</li>
+              <li>Cumplir obligaciones legales</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">4. Base legal del tratamiento</h2>
             <p>
-              La base jurídica es tu consentimiento, el cumplimiento de obligaciones legales
-              y la ejecución de servicios solicitados.
+              La base jurídica es tu consentimiento (al enviar el formulario), el cumplimiento de obligaciones legales y, en su caso, la ejecución de servicios solicitados.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">5. Conservación de los datos</h2>
             <p>
-              Los datos se conservarán el tiempo necesario para cumplir con las finalidades descritas
-              o mientras exista una relación profesional activa.
+              Los datos se conservarán el tiempo necesario para cumplir con las finalidades descritas o mientras exista una relación activa con el usuario. Posteriormente, se bloquearán y conservarán solo para atender posibles responsabilidades legales.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-heading font-semibold mb-3">6. Derechos del usuario</h2>
+            <h2 className="text-2xl font-heading font-semibold mb-3">6. Destinatarios y subcontratación</h2>
+            <p>
+              Los datos podrán ser comunicados a gestorías, asesores o colaboradores externos para la gestión o análisis de subvenciones, siempre bajo acuerdos de confidencialidad y solo para la finalidad indicada. No se cederán datos a terceros salvo obligación legal.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-heading font-semibold mb-3">7. Derechos del usuario</h2>
             <p>Puedes ejercer los siguientes derechos sobre tus datos personales:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Acceso, rectificación y supresión.</li>
-              <li>Limitación u oposición al tratamiento.</li>
-              <li>Portabilidad de los datos.</li>
-              <li>Retirada del consentimiento en cualquier momento.</li>
+              <li>Acceso</li>
+              <li>Rectificación</li>
+              <li>Supresión</li>
+              <li>Limitación</li>
+              <li>Oposición</li>
+              <li>Portabilidad</li>
+              <li>Retirada del consentimiento en cualquier momento</li>
             </ul>
+            <p className="mt-2">Para ejercer estos derechos, contacta en <a href="mailto:info@ayudapyme.es" className="text-primary font-semibold hover:underline">info@ayudapyme.es</a>.</p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-heading font-semibold mb-3">7. Contacto</h2>
+            <h2 className="text-2xl font-heading font-semibold mb-3">8. Seguridad</h2>
             <p>
-              Para ejercer tus derechos o solicitar información adicional:
+              Aplicamos medidas técnicas y organizativas para proteger tus datos personales y evitar el acceso no autorizado, pérdida o alteración.
             </p>
-            <p className="mt-2 font-semibold">
-              Email: info@gestoriaexpress.es  
-              <br />
-              Teléfono: +34 900 123 456
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-heading font-semibold mb-3">9. Cambios en la política</h2>
+            <p>
+              Podemos modificar esta política de privacidad en cualquier momento. La versión vigente estará siempre disponible en esta página.
             </p>
           </section>
 
