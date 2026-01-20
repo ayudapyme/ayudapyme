@@ -18,7 +18,7 @@ const Terminos = () => {
       {/* Content */}
       <section className="py-12 md:py-20 flex-1">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-foreground leading-relaxed space-y-6 text-base">
-          <p className="text-right text-sm text-muted-foreground">Última actualización: 22/1/26</p>
+          <p className="text-right text-sm text-muted-foreground">Última actualización: 20/1/26</p>
           <h2 className="text-2xl font-heading font-semibold">1. Objeto del servicio</h2>
           <p>
             La plataforma ofrece un servicio de búsqueda, análisis y notificación de subvenciones públicas que puedan ser de interés para empresas, autónomos o emprendedores, así como orientación general sobre los requisitos de cada convocatoria.<br/>
