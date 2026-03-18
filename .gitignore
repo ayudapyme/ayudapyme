@@ -24,3 +24,24 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 node_modules
+
+# Archivos de referencia / diseño (no pertenecen al proyecto)
+ejemplo1.html
+ejemplo2/
+dashboard.html
+*.html
+
+# Next.js
+.next/
+out/
+
+# Env
+.env.local
+.env*.local
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
