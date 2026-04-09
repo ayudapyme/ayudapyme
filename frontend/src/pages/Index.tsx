@@ -2,7 +2,6 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import AboutUs from "@/components/AboutUs";
 import FAQ from "@/components/FAQ";
-import MultiStepForm from "@/components/MultiStepForm";
 import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
 
@@ -15,7 +14,6 @@ const Index = () => {
         <AboutUs />
         <FAQ />
         <ContactSection />
-        <MultiStepForm />
       </main>
       <Footer />
     </div>

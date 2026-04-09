@@ -18,7 +18,6 @@ const Header = () => {
     { href: "#inicio", label: "Inicio", type: "hash" as const },
     { href: "#quienes-somos", label: "Quiénes somos", type: "hash" as const },
     { href: "#faq", label: "Preguntas frecuentes", type: "hash" as const },
-    { href: "#formulario", label: "Formulario", type: "hash" as const },
     { href: "#contacto", label: "Contacto", type: "hash" as const },
   ];
 
