@@ -9,6 +9,7 @@ import Contacto from "./pages/Contacto";
 import Privacidad from "./pages/Privacidad";
 import Terminos from "./pages/Terminos";
 import Autorizar from "./pages/Autorizar";
+import Portal from "./pages/Portal";
 
 
 
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/autorizar" element={<Autorizar />} />
+          <Route path="/portal" element={<Portal />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
