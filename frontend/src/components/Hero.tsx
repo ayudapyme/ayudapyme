@@ -1,4 +1,5 @@
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const benefits = [
@@ -40,10 +41,14 @@ const Hero = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="animate-slide-up mb-6 md:mb-0" style={{ animationDelay: "0.3s" }}>
-            <a href="#formulario" className="btn-hero group">
-              Solicitar sin compromiso
+          {/* CTA Buttons */}
+          <div className="animate-slide-up mb-6 md:mb-0 flex flex-col sm:flex-row items-center justify-center gap-4" style={{ animationDelay: "0.3s" }}>
+            <Link to="/autorizar" className="btn-hero group flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Acceder con certificado digital
+            </Link>
+            <a href="#formulario" className="text-primary-foreground/80 hover:text-primary-foreground font-semibold transition-colors underline underline-offset-4">
+              o rellena el formulario
             </a>
           </div>
         </div>

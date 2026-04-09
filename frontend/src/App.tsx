@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import Contacto from "./pages/Contacto";
 import Privacidad from "./pages/Privacidad";
 import Terminos from "./pages/Terminos";
+import Autorizar from "./pages/Autorizar";
 
 
 
@@ -21,6 +22,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/autorizar" element={<Autorizar />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
