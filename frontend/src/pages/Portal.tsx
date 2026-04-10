@@ -19,6 +19,12 @@ const Portal = () => {
 
     if (token) {
       localStorage.setItem("ayudapyme_token", token);
+      // Si viene con action=apodera, redirigir a APODERA Tipo A
+      const action = params.get("action");
+      if (action === "apodera") {
+        window.location.href = "https://apodera.redsara.es/ciudadano/";
+        return;
+      }
       // Limpiar URL
       window.history.replaceState({}, "", "/portal");
     } else {
