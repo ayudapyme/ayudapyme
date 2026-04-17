@@ -342,17 +342,17 @@ const MultiStepForm = () => {
   const stepLabels = getStepLabels();
 
   return (
-    <section id="formulario" className="py-12 md:py-16 bg-hero">
+    <section id="formulario" className="py-8 md:py-16 bg-hero">
       <div className="container-custom">
-        <div className={`${isSubmitted ? "max-w-2xl" : "max-w-[640px]"} mx-auto transition-all duration-300`}>
+        <div className={`${isSubmitted ? "max-w-2xl" : "max-w-[580px]"} mx-auto`}>
 
           {/* Section header */}
           {!isSubmitted && (
-            <div className="text-center mb-6">
-              <h2 className="text-xl md:text-2xl font-heading font-bold text-white tracking-tight mb-1.5">
+            <div className="text-center mb-4 md:mb-6">
+              <h2 className="text-lg md:text-2xl font-heading font-bold text-white tracking-tight mb-1">
                 Analiza tu empresa gratis
               </h2>
-              <p className="text-white/75 text-sm max-w-sm mx-auto">
+              <p className="text-white/75 text-xs md:text-sm max-w-sm mx-auto">
                 Rellena estos datos y te llamamos con tus subvenciones.
               </p>
             </div>
