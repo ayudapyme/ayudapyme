@@ -3,7 +3,7 @@ import { ArrowRight, ArrowDown, Phone } from "lucide-react";
 const Hero = () => {
   return (
     <section id="inicio" className="bg-hero">
-      <div className="container-custom pt-20 pb-8 md:pt-28 md:pb-14">
+      <div className="container-custom pt-20 pb-6 md:pt-28 md:pb-14">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
 
           <div>
@@ -16,27 +16,28 @@ const Hero = () => {
               <strong className="text-white"> Si no te lo conceden, no pagas nada.</strong>
             </p>
 
-            <a
-              href="#formulario"
-              className="group inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg bg-cta text-white font-bold text-sm transition-all duration-200 hover:brightness-110 active:scale-[0.98] mb-2"
-            >
-              Calcular mis ayudas gratis
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            {/* CTA con flecha apuntando al botón */}
+            <div className="relative">
+              {/* Flecha que apunta AL botón — solo móvil */}
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 sm:hidden animate-bounce">
+                <ArrowDown className="w-5 h-5 text-cta" />
+              </div>
+
+              <a
+                href="#formulario"
+                className="group flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3.5 rounded-lg bg-cta text-white font-bold text-base transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+              >
+                Calcular mis ayudas gratis
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
 
             <a
               href="tel:+34601646362"
-              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 text-white/70 font-medium text-sm"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2 mt-2 text-white/70 font-medium text-sm"
             >
               <Phone className="w-3.5 h-3.5" />
               601 64 63 62
-            </a>
-          </div>
-
-          {/* Flecha abajo — indica dónde clicar, sobre todo en móvil */}
-          <div className="flex justify-center lg:hidden mt-2">
-            <a href="#formulario" className="animate-bounce text-white/40">
-              <ArrowDown className="w-5 h-5" />
             </a>
           </div>
 

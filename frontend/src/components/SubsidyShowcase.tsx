@@ -9,7 +9,7 @@ const subsidies = [
 
 const SubsidyShowcase = () => {
   return (
-    <section className="py-6 md:py-20">
+    <section className="hidden md:block py-6 md:py-20">
       <div className="container-custom">
         <h2 className="text-[17px] md:text-4xl font-heading font-bold text-foreground mb-1 md:mb-2">
           Miles de euros que podrías estar cobrando
