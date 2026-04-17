@@ -1,4 +1,4 @@
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, ArrowDown, Phone } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -7,47 +7,37 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
 
           <div>
-            {/* Badge — oculto en móvil, no aporta */}
-            <div className="hidden sm:inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span className="text-white/80 text-sm">Convocatorias con plazos abiertos ahora</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-4xl md:text-[2.75rem] font-heading font-bold text-white mb-3 leading-[1.15] tracking-tight">
-              Descubre qué subvenciones puede conseguir tu empresa
+            <h1 className="text-[22px] sm:text-4xl md:text-[2.75rem] font-heading font-bold text-white mb-2 sm:mb-3 leading-[1.2] tracking-tight">
+              Hay subvenciones para tu negocio
             </h1>
 
-            <p className="text-sm sm:text-base text-white/80 mb-5 max-w-md leading-relaxed">
-              Encontramos las ayudas, tramitamos todo.
+            <p className="text-[13px] sm:text-base text-white/80 mb-4 sm:mb-6 leading-relaxed">
+              Las encontramos y las tramitamos.
               <strong className="text-white"> Si no te lo conceden, no pagas nada.</strong>
             </p>
 
-            <div className="flex gap-2 mb-3">
-              <a
-                href="#formulario"
-                className="group inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg bg-cta text-white font-bold text-sm transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
-              >
-                Calcular mis ayudas
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="tel:+34601646362"
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:px-5 sm:py-3 rounded-lg border border-white/25 text-white font-medium text-sm transition-colors hover:bg-white/10 active:scale-[0.98]"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">601 64 63 62</span>
-                <span className="sm:hidden">Llamar</span>
-              </a>
-            </div>
+            <a
+              href="#formulario"
+              className="group inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg bg-cta text-white font-bold text-sm transition-all duration-200 hover:brightness-110 active:scale-[0.98] mb-2"
+            >
+              Calcular mis ayudas gratis
+              <ArrowRight className="w-4 h-4" />
+            </a>
 
-            {/* Prueba social — solo desktop */}
-            <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1 text-white/60 text-sm">
-              <span>500+ ayudas</span>
-              <span className="text-white/30">·</span>
-              <span>Análisis en 48h</span>
-              <span className="text-white/30">·</span>
-              <span>Toda España</span>
-            </div>
+            <a
+              href="tel:+34601646362"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 text-white/70 font-medium text-sm"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              601 64 63 62
+            </a>
+          </div>
+
+          {/* Flecha abajo — indica dónde clicar, sobre todo en móvil */}
+          <div className="flex justify-center lg:hidden mt-2">
+            <a href="#formulario" className="animate-bounce text-white/40">
+              <ArrowDown className="w-5 h-5" />
+            </a>
           </div>
 
           {/* Card — solo desktop */}
