@@ -344,7 +344,7 @@ const MultiStepForm = () => {
   return (
     <section id="formulario" className="py-12 md:py-16 bg-hero">
       <div className="container-custom">
-        <div className={`${isSubmitted ? "max-w-4xl" : "max-w-[640px]"} mx-auto transition-all duration-300`}>
+        <div className={`${isSubmitted ? "max-w-2xl" : "max-w-[640px]"} mx-auto transition-all duration-300`}>
 
           {/* Section header */}
           {!isSubmitted && (
@@ -413,8 +413,8 @@ const MultiStepForm = () => {
               {/* ─── Post-submit: Calendly directo ────── */}
               {isSubmitted && (
                 <div className="animate-fade-in">
-                  {/* Heading claro */}
-                  <div className="flex items-center gap-3 mb-5">
+                  {/* Heading */}
+                  <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center flex-shrink-0">
                       <Check className="w-4 h-4 text-accent" />
                     </div>
@@ -423,67 +423,39 @@ const MultiStepForm = () => {
                         Hemos recibido tus datos
                       </h3>
                       <p className="text-muted-foreground text-sm">
-                        Elige un día y te contamos tus subvenciones en 15 minutos.
+                        Elige un día y te contamos tus subvenciones en 15 min.
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-3 gap-5 items-start">
-                    {/* Calendly — 2/3 */}
-                    <div className="md:col-span-2">
-                      <iframe
-                        src={`${import.meta.env.VITE_CALENDLY_URL}?hide_gdpr_banner=1&hide_landing_page_details=1`}
-                        width="100%"
-                        height="660"
-                        frameBorder="0"
-                        title="Agendar reunión"
-                        className="rounded-lg border border-border"
-                      />
-                    </div>
+                  {/* Calendly */}
+                  <iframe
+                    src={`${import.meta.env.VITE_CALENDLY_URL}?hide_gdpr_banner=1&hide_landing_page_details=1`}
+                    width="100%"
+                    className="rounded-lg border border-border h-[480px] md:h-[620px]"
+                    frameBorder="0"
+                    title="Agendar reunión"
+                  />
 
-                    {/* Lateral — 1/3 */}
-                    <div className="md:col-span-1">
-                      {/* Qué vas a saber */}
-                      <div className="bg-secondary rounded-lg p-4 mb-5">
-                        <p className="font-heading font-semibold text-foreground text-sm mb-3">En la llamada te contamos:</p>
-                        <ul className="space-y-2">
-                          {[
-                            "Qué ayudas encajan con tu perfil",
-                            "Cuánto dinero podrías conseguir",
-                            "Qué pasos seguimos nosotros",
-                          ].map((item, i) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <Check className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
-                              <span className="text-muted-foreground text-sm">{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Fallback */}
-                      <div className="pt-4 border-t border-border">
-                        <p className="text-foreground text-sm font-semibold mb-3">
-                          ¿No puedes ahora? Te contactamos:
-                        </p>
-                        <div className="space-y-2">
-                          <a
-                            href="tel:+34601646362"
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-cta text-white font-semibold text-sm hover:brightness-110 active:scale-[0.98] transition-all"
-                          >
-                            <Phone className="w-4 h-4" />
-                            601 64 63 62
-                          </a>
-                          <a
-                            href="mailto:admin@ayudapyme.es"
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border text-foreground font-medium text-sm hover:bg-secondary transition-colors"
-                          >
-                            <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                            </svg>
-                            admin@ayudapyme.es
-                          </a>
-                        </div>
-                      </div>
+                  {/* Fallback — siempre debajo */}
+                  <div className="mt-4 p-4 bg-secondary rounded-lg">
+                    <p className="text-foreground text-sm font-semibold mb-2">
+                      ¿No puedes ahora? Te contactamos nosotros:
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <a
+                        href="tel:+34601646362"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-cta text-white font-semibold text-sm active:scale-[0.98] transition-all"
+                      >
+                        <Phone className="w-4 h-4" />
+                        601 64 63 62
+                      </a>
+                      <a
+                        href="mailto:admin@ayudapyme.es"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-border text-foreground font-medium text-sm active:scale-[0.98] transition-colors"
+                      >
+                        admin@ayudapyme.es
+                      </a>
                     </div>
                   </div>
                 </div>
