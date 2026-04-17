@@ -4,7 +4,7 @@ const Privacidad = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header section */}
-      <header className="hero-gradient py-16 md:py-24 text-center">
+      <header className="bg-hero py-16 md:py-24 text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary-foreground">
           Política de Privacidad
         </h1>

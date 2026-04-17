@@ -9,21 +9,33 @@ import {
   ArrowRight,
   ArrowLeft,
   Check,
-  Sparkles,
+  Briefcase,
+  Phone,
 } from "lucide-react";
 
-type CompanySize = "autonomo" | "micro" | "pequena" | "mediana" | "grande" | null;
+// ── Types ──────────────────────────────────────────────
+
+type FormPath = "empresa" | "autonomo" | null;
+type CompanySize = "micro" | "pequena" | "mediana" | "grande" | null;
+type EmployeeCount = "solo" | "1-3" | "4-9" | null;
 
 interface FormData {
-  actividad: string;
+  // Common
   cif_nif: string;
-  email_facturacion: string;
-  nombre_titular: string;
-  domicilio_fiscal: string;
+  email: string;
+  nombre: string;
+  telefono: string;
+  domicilio: string;
   codigo_postal: string;
   ciudad: string;
-  telefono: string;
+  actividad: string;
+  // Autonomo only
+  nombre_negocio: string;
+  anos_antiguedad: string;
+  facturacion_anual: string;
 }
+
+// ── Validation helpers ─────────────────────────────────
 
 const NIF_MAP = "TRWAGMYFPDXBNJZSQVHLCKE";
 
@@ -35,10 +47,7 @@ function normalizeId(value: string): string {
 function isValidNIF(v: string): boolean {
   v = normalizeId(v);
   if (!/^[0-9]{8}[A-Z]$/.test(v)) return false;
-  const num = parseInt(v.slice(0, 8), 10);
-  const letter = v[8];
-  const expected = NIF_MAP[num % 23];
-  return letter === expected;
+  return v[8] === NIF_MAP[parseInt(v.slice(0, 8), 10) % 23];
 }
 
 function isValidNIE(v: string): boolean {
@@ -46,14 +55,11 @@ function isValidNIE(v: string): boolean {
   if (!/^[XYZ][0-9]{7}[A-Z]$/.test(v)) return false;
   const map: Record<string, string> = { X: "0", Y: "1", Z: "2" };
   const numPart = map[v[0]] + v.slice(1, 8);
-  const letter = v[8];
-  const expected = NIF_MAP[parseInt(numPart, 10) % 23];
-  return letter === expected;
+  return v[8] === NIF_MAP[parseInt(numPart, 10) % 23];
 }
 
 function sumDigits(n: number): number {
-  if (n < 10) return n;
-  return Math.floor(n / 10) + (n % 10);
+  return n < 10 ? n : Math.floor(n / 10) + (n % 10);
 }
 
 function isValidCIF(v: string): boolean {
@@ -64,79 +70,121 @@ function isValidCIF(v: string): boolean {
   const control = v[8].toUpperCase();
   let sumEven = 0;
   let sumOdd = 0;
-
   for (let i = 0; i < 7; i++) {
     const d = parseInt(body[i], 10);
-    const pos = i + 1;
-    if (pos % 2 === 0) {
-      sumEven += d;
-    } else {
-      sumOdd += sumDigits(d * 2);
-    }
+    if ((i + 1) % 2 === 0) sumEven += d;
+    else sumOdd += sumDigits(d * 2);
   }
-  const total = sumEven + sumOdd;
-  const digit = (10 - (total % 10)) % 10;
+  const digit = (10 - ((sumEven + sumOdd) % 10)) % 10;
   const letter = "JABCDEFGHI"[digit];
-  const mustBeDigit = "ABEH".includes(first);
-  const mustBeLetter = "KPQSW".includes(first);
-
-  if (mustBeDigit) return control === String(digit);
-  if (mustBeLetter) return control === letter;
+  if ("ABEH".includes(first)) return control === String(digit);
+  if ("KPQSW".includes(first)) return control === letter;
   return control === String(digit) || control === letter;
 }
 
 function isValidSpanishId(v: string): boolean {
   v = normalizeId(v);
-  if (!v) return false;
-  return isValidNIF(v) || isValidNIE(v) || isValidCIF(v);
-}
-
-function normalizeIban(iban: string): string {
-  if (!iban) return "";
-  return iban.replace(/\s+/g, "").toUpperCase();
-}
-
-function isValidIban(iban: string): boolean {
-  const v = normalizeIban(iban);
-  if (!/^([A-Z]{2}[0-9]{2}[A-Z0-9]{11,30})$/.test(v)) return false;
-  return v.length >= 15 && v.length <= 34;
+  return !!v && (isValidNIF(v) || isValidNIE(v) || isValidCIF(v));
 }
 
 function isValidEmail(email: string): boolean {
   return /^\S+@\S+\.\S+$/.test(email.trim());
 }
 
+// ── Component ──────────────────────────────────────────
+
 const MultiStepForm = () => {
-  const [currentStep, setCurrentStep] = useState(0); // 0 = pantalla inicio
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formPath, setFormPath] = useState<FormPath>(null);
   const [companySize, setCompanySize] = useState<CompanySize>(null);
+  const [employeeCount, setEmployeeCount] = useState<EmployeeCount>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    actividad: "",
     cif_nif: "",
-    email_facturacion: "",
-    nombre_titular: "",
-    domicilio_fiscal: "",
+    email: "",
+    nombre: "",
+    telefono: "",
+    domicilio: "",
     codigo_postal: "",
     ciudad: "",
-    telefono: "",
+    actividad: "",
+    nombre_negocio: "",
+    anos_antiguedad: "",
+    facturacion_anual: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  // showCalendly removed — Calendly opens automatically after submit
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const totalSteps = 3;
+  const totalSteps = 4;
+
+  // ── Options ────────────────────────────────────────
 
   const companySizeOptions = [
-    { value: "autonomo" as const, label: "Autónomo", icon: User },
     { value: "micro" as const, label: "Micro", sublabel: "1–9 empleados", icon: Users },
     { value: "pequena" as const, label: "Pequeña", sublabel: "10–49 empleados", icon: Building2 },
     { value: "mediana" as const, label: "Mediana", sublabel: "50–249 empleados", icon: Building },
     { value: "grande" as const, label: "Gran empresa", sublabel: "250+ empleados", icon: Factory },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const employeeOptions = [
+    { value: "solo" as const, label: "Solo yo", icon: User },
+    { value: "1-3" as const, label: "1–3 empleados", icon: Users },
+    { value: "4-9" as const, label: "4–9 empleados", icon: Users },
+  ];
+
+  const antiguedadOptions = [
+    "Menos de 1 año",
+    "1–3 años",
+    "3–5 años",
+    "5–10 años",
+    "Más de 10 años",
+  ];
+
+  const facturacionOptions = [
+    "Menos de 30.000 €",
+    "30.000–60.000 €",
+    "60.000–100.000 €",
+    "100.000–200.000 €",
+    "Más de 200.000 €",
+  ];
+
+  // ── Helpers ────────────────────────────────────────
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const getCompanySizeLabel = (size: CompanySize): string => {
+    const map: Record<string, string> = {
+      micro: "Micro (1–9 empleados)",
+      pequena: "Pequeña (10–49 empleados)",
+      mediana: "Mediana (50–249 empleados)",
+      grande: "Gran empresa (250+ empleados)",
+    };
+    return size ? map[size] : "";
+  };
+
+  const getEmployeeLabel = (count: EmployeeCount): string => {
+    const map: Record<string, string> = {
+      solo: "Solo yo",
+      "1-3": "1–3 empleados",
+      "4-9": "4–9 empleados",
+    };
+    return count ? map[count] : "";
+  };
+
+  const getStepLabels = (): string[] => {
+    if (formPath === "empresa") return ["Tipo", "Tamaño", "Actividad", "Contacto"];
+    if (formPath === "autonomo") return ["Tipo", "Equipo", "Negocio", "Contacto"];
+    return ["Tipo", "", "", ""];
+  };
+
+  // ── Navigation ─────────────────────────────────────
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -146,57 +194,85 @@ const MultiStepForm = () => {
   };
 
   const prevStep = () => {
-    if (currentStep > 0) {
+    if (currentStep <= 1) return;
+    if (currentStep === 2) {
+      // Going back to bifurcation — reset path
+      setFormPath(null);
+      setCompanySize(null);
+      setEmployeeCount(null);
+      setCurrentStep(1);
+    } else {
       setCurrentStep(currentStep - 1);
-      setErrorMessage(null);
     }
+    setErrorMessage(null);
   };
 
-  const startForm = () => {
-    setCurrentStep(1);
+  const selectPath = (path: FormPath) => {
+    setFormPath(path);
+    setCompanySize(null);
+    setEmployeeCount(null);
+    setCurrentStep(2);
+    setErrorMessage(null);
   };
 
-  const getCompanySizeValue = (size: CompanySize): string => {
-    const mapping: Record<string, string> = {
-      autonomo: "Autónomo",
-      micro: "Micro (1–9 empleados)",
-      pequena: "Pequeña (10–49 empleados)",
-      mediana: "Mediana (50–249 empleados)",
-      grande: "Gran empresa (250+ empleados)",
-    };
-    return size ? mapping[size] : "";
+  // ── Can proceed checks ────────────────────────────
+
+  const canProceedStep2 = (): boolean => {
+    if (formPath === "empresa") return companySize !== null;
+    if (formPath === "autonomo") return employeeCount !== null;
+    return false;
   };
 
-  const canSubmitStep3 = (): string | null => {
+  const canProceedStep3 = (): boolean => {
+    if (formPath === "empresa") return formData.actividad.trim().length > 0;
+    if (formPath === "autonomo") {
+      return (
+        formData.nombre_negocio.trim().length > 0 &&
+        formData.actividad.trim().length > 0 &&
+        formData.anos_antiguedad.length > 0 &&
+        formData.facturacion_anual.length > 0
+      );
+    }
+    return false;
+  };
+
+  // ── Submit validation ─────────────────────────────
+
+  const validateStep4 = (): string | null => {
     if (!formData.cif_nif.trim()) return "La identificación es obligatoria.";
-    if (!isValidSpanishId(formData.cif_nif)) return "El NIF/NIE/CIF introducido no es válido.";
-    if (!formData.email_facturacion.trim()) return "El email de facturación es obligatorio.";
-    if (!isValidEmail(formData.email_facturacion)) return "Introduce un email de facturación válido.";
-    if (!formData.nombre_titular.trim()) return "El nombre del titular es obligatorio.";
-    if (!formData.domicilio_fiscal.trim()) return "El domicilio fiscal es obligatorio.";
+
+    const id = normalizeId(formData.cif_nif);
+    if (formPath === "empresa") {
+      if (!isValidCIF(id) && !isValidSpanishId(id))
+        return "Introduce un CIF válido para tu empresa.";
+    } else {
+      if (!isValidNIF(id) && !isValidNIE(id))
+        return "Introduce un NIF o NIE válido.";
+    }
+
+    if (!formData.email.trim()) return "El email es obligatorio.";
+    if (!isValidEmail(formData.email)) return "Introduce un email válido.";
+    if (!formData.nombre.trim())
+      return formPath === "empresa"
+        ? "El nombre del responsable es obligatorio."
+        : "Tu nombre completo es obligatorio.";
+    if (!formData.telefono.trim()) return "El teléfono es obligatorio.";
+    if (!formData.domicilio.trim()) return "El domicilio es obligatorio.";
     if (!formData.codigo_postal.trim()) return "El código postal es obligatorio.";
-    if (!/^[0-9]{4,6}$/.test(formData.codigo_postal.trim())) return "Introduce un código postal válido.";
+    if (!/^[0-9]{4,5}$/.test(formData.codigo_postal.trim()))
+      return "Introduce un código postal válido.";
     if (!formData.ciudad.trim()) return "La ciudad es obligatoria.";
-    if (!formData.telefono.trim()) return "El número de teléfono es obligatorio.";
-
-    const termsCheckbox = document.getElementById("aceptaTerminos") as HTMLInputElement | null;
-    if (!termsCheckbox || !termsCheckbox.checked) {
-      return "Debes aceptar los términos y condiciones.";
-    }
-
-    if (!getCompanySizeValue(companySize)) {
-      return "Selecciona el tamaño de tu empresa en el primer paso.";
-    }
-
-    if (!formData.actividad.trim()) {
-      return "Indica a qué se dedica tu empresa en el segundo paso.";
-    }
+    if (/^\d+$/.test(formData.ciudad.trim()))
+      return "Introduce el nombre de la ciudad, no el código postal.";
+    if (!acceptedTerms) return "Debes aceptar los términos y condiciones.";
 
     return null;
   };
 
+  // ── Submit ────────────────────────────────────────
+
   const handleSubmit = async () => {
-    const error = canSubmitStep3();
+    const error = validateStep4();
     if (error) {
       setErrorMessage(error);
       return;
@@ -205,22 +281,44 @@ const MultiStepForm = () => {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const webhookUrl = "https://ayudapyme.app.n8n.cloud/webhook/7c1626a4-96df-4d4b-ad2c-675afd64b257";
-    const cif_nifNormalizada = normalizeId(formData.cif_nif);
+    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
+    if (!webhookUrl) {
+      setErrorMessage("Error de configuración. Contacta con soporte.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const common = {
+      cif_nif: normalizeId(formData.cif_nif),
+      email: formData.email.trim(),
+      telefono: formData.telefono.trim(),
+      domicilio: formData.domicilio.trim(),
+      codigo_postal: formData.codigo_postal.trim(),
+      ciudad: formData.ciudad.trim(),
+      actividad: formData.actividad.trim(),
+      acepta_terminos: true,
+      origen: "entrevista-web",
+    };
+
+    const payload =
+      formPath === "empresa"
+        ? {
+            ...common,
+            tipo: "empresa",
+            tamano_empresa: getCompanySizeLabel(companySize),
+            nombre_responsable: formData.nombre.trim(),
+          }
+        : {
+            ...common,
+            tipo: "autonomo",
+            num_empleados: getEmployeeLabel(employeeCount),
+            nombre_completo: formData.nombre.trim(),
+            nombre_negocio: formData.nombre_negocio.trim(),
+            anos_antiguedad: formData.anos_antiguedad,
+            facturacion_anual: formData.facturacion_anual,
+          };
+
     try {
-      const payload = {
-        tamano_empresa: getCompanySizeValue(companySize),
-        actividad: formData.actividad.trim(),
-        cif_nif: cif_nifNormalizada,
-        email_facturacion: formData.email_facturacion.trim(),
-        nombre_titular: formData.nombre_titular.trim(),
-        domicilio_fiscal: formData.domicilio_fiscal.trim(),
-        codigo_postal: formData.codigo_postal.trim(),
-        ciudad: formData.ciudad.trim(),
-        telefono: formData.telefono.trim(),
-        acepta_terminos: true,
-        origen: "entrevista-web",
-      };
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -228,10 +326,9 @@ const MultiStepForm = () => {
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Error al enviar datos al webhook.");
+        throw new Error(errorData.error || "Error al enviar el formulario.");
       }
       setIsSubmitted(true);
-      setCurrentStep(3);
     } catch (err: any) {
       console.error(err);
       setErrorMessage(err.message || "Ha ocurrido un error al enviar el formulario.");
@@ -240,118 +337,201 @@ const MultiStepForm = () => {
     }
   };
 
+  // ── Render ────────────────────────────────────────
+
+  const stepLabels = getStepLabels();
+
   return (
-    <section id="formulario" className="section-padding bg-muted">
+    <section id="formulario" className="py-12 md:py-16 bg-hero">
       <div className="container-custom">
-        {/* Form Container */}
-        <div className="max-w-[650px] mx-auto">
+        <div className={`${isSubmitted ? "max-w-4xl" : "max-w-[640px]"} mx-auto transition-all duration-300`}>
+
+          {/* Section header */}
+          {!isSubmitted && (
+            <div className="text-center mb-6">
+              <h2 className="text-xl md:text-2xl font-heading font-bold text-white tracking-tight mb-1.5">
+                Analiza tu empresa gratis
+              </h2>
+              <p className="text-white/75 text-sm max-w-sm mx-auto">
+                Rellena estos datos y te llamamos con tus subvenciones.
+              </p>
+            </div>
+          )}
+
           <form
-            id="gestoria-form"
-            className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden"
+            className="bg-card rounded-xl border border-border shadow-lg overflow-hidden"
             onSubmit={(e) => e.preventDefault()}
           >
-            {/* Hidden field for company size value */}
-            <input
-              type="hidden"
-              name="tamano_empresa"
-              id="tamano_empresa"
-              value={getCompanySizeValue(companySize)}
-            />
+            <div className="p-5 md:p-8">
 
-            {/* Inner container with scroll */}
-            <div className="p-6 md:p-8 max-h-[70vh] overflow-y-auto">
-              {/* Step 0: Start Screen */}
-              {currentStep === 0 && (
-                <div className="animate-fade-in text-center py-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
-                    <Sparkles className="w-8 h-8 text-primary" />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    Descubre las Ayudas y Subvenciones para tu Empresa
-                  </h2>
-                  <p className="text-muted-foreground text-base mb-8 max-w-md mx-auto">
-                    Completa este formulario en pocos pasos y nuestro equipo se pondrá en contacto contigo.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={startForm}
-                    className="btn-primary text-lg px-10 py-4"
-                  >
-                    Comenzar
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </button>
-                </div>
-              )}
-
-              {/* Progress Steps */}
-              {(currentStep > 0 || isSubmitted) && (
+              {/* ─── Progress indicator ─────────────────── */}
+              {currentStep > 0 && !isSubmitted && (
                 <div className="mb-8">
-                  <div className="flex items-center justify-center gap-3">
-                    {[1, 2, 3].map((step) => (
+                  <div className="flex items-center justify-center gap-2">
+                    {[1, 2, 3, 4].map((step) => (
                       <div key={step} className="flex items-center">
                         <div
                           className={`step-indicator w-9 h-9 text-sm ${
-                            isSubmitted
-                              ? "completed"
-                              : currentStep === step
+                            currentStep === step
                               ? "active"
                               : currentStep > step
                               ? "completed"
                               : "pending"
                           }`}
                         >
-                          {isSubmitted || currentStep > step ? <Check className="w-4 h-4" /> : step}
+                          {currentStep > step ? <Check className="w-4 h-4" /> : step}
                         </div>
                         {step < totalSteps && (
                           <div
-                            className={`w-10 md:w-16 h-1 mx-2 rounded-full transition-colors ${
-                              isSubmitted || currentStep > step ? "bg-accent" : "bg-muted"
+                            className={`w-8 md:w-12 h-1 mx-1 rounded-full transition-colors ${
+                              currentStep > step ? "bg-accent" : "bg-muted"
                             }`}
                           />
                         )}
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-center mt-3 text-xs">
-                    <div className="flex items-center gap-3 md:gap-12">
-                      <span
-                        className={`w-12 md:w-16 text-center font-semibold ${
-                          isSubmitted || currentStep >= 1 ? "text-foreground" : "text-muted-foreground"
-                        }`}
-                      >
-                        Tamaño
-                      </span>
-                      <span
-                        className={`w-12 md:w-16 text-center font-semibold ${
-                          isSubmitted || currentStep >= 2 ? "text-foreground" : "text-muted-foreground"
-                        }`}
-                      >
-                        Actividad
-                      </span>
-                      <span
-                        className={`w-12 md:w-16 text-center font-semibold ${
-                          isSubmitted || currentStep >= 3 ? "text-foreground" : "text-muted-foreground"
-                        }`}
-                      >
-                        Pago
-                      </span>
+                  {formPath && (
+                    <div className="flex justify-center mt-3 text-xs">
+                      <div className="flex items-center gap-2 md:gap-8">
+                        {stepLabels.map((label, i) => (
+                          <span
+                            key={i}
+                            className={`w-14 md:w-16 text-center font-semibold ${
+                              currentStep >= i + 1 ? "text-foreground" : "text-muted-foreground"
+                            }`}
+                          >
+                            {label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ─── Post-submit: Calendly directo ────── */}
+              {isSubmitted && (
+                <div className="animate-fade-in">
+                  {/* Heading claro */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-4 h-4 text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-heading font-bold text-foreground">
+                        Hemos recibido tus datos
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        Elige un día y te contamos tus subvenciones en 15 minutos.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-5 items-start">
+                    {/* Calendly — 2/3 */}
+                    <div className="md:col-span-2">
+                      <iframe
+                        src={`${import.meta.env.VITE_CALENDLY_URL}?hide_gdpr_banner=1&hide_landing_page_details=1`}
+                        width="100%"
+                        height="660"
+                        frameBorder="0"
+                        title="Agendar reunión"
+                        className="rounded-lg border border-border"
+                      />
+                    </div>
+
+                    {/* Lateral — 1/3 */}
+                    <div className="md:col-span-1">
+                      {/* Qué vas a saber */}
+                      <div className="bg-secondary rounded-lg p-4 mb-5">
+                        <p className="font-heading font-semibold text-foreground text-sm mb-3">En la llamada te contamos:</p>
+                        <ul className="space-y-2">
+                          {[
+                            "Qué ayudas encajan con tu perfil",
+                            "Cuánto dinero podrías conseguir",
+                            "Qué pasos seguimos nosotros",
+                          ].map((item, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <Check className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
+                              <span className="text-muted-foreground text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Fallback */}
+                      <div className="pt-4 border-t border-border">
+                        <p className="text-foreground text-sm font-semibold mb-3">
+                          ¿No puedes ahora? Te contactamos:
+                        </p>
+                        <div className="space-y-2">
+                          <a
+                            href="tel:+34601646362"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-cta text-white font-semibold text-sm hover:brightness-110 active:scale-[0.98] transition-all"
+                          >
+                            <Phone className="w-4 h-4" />
+                            601 64 63 62
+                          </a>
+                          <a
+                            href="mailto:admin@ayudapyme.es"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border text-foreground font-medium text-sm hover:bg-secondary transition-colors"
+                          >
+                            <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                            </svg>
+                            admin@ayudapyme.es
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Step 1: Company Size */}
+              {/* ─── Step 1: Bifurcation ────────────────── */}
               {currentStep === 1 && !isSubmitted && (
+                <div className="animate-fade-in">
+                  <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
+                    ¿Cómo trabajas?
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => selectPath("autonomo")}
+                      className="company-size-option p-5 md:p-6 flex flex-col items-center text-center"
+                    >
+                      <User className="w-8 h-8 mb-2 text-muted-foreground" />
+                      <span className="font-heading font-bold text-foreground text-base">
+                        Autónomo
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => selectPath("empresa")}
+                      className="company-size-option p-5 md:p-6 flex flex-col items-center text-center"
+                    >
+                      <Briefcase className="w-8 h-8 mb-2 text-muted-foreground" />
+                      <span className="font-heading font-bold text-foreground text-base">
+                        Empresa
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ─── Step 2: Empresa → Tamaño ──────────── */}
+              {currentStep === 2 && formPath === "empresa" && !isSubmitted && (
                 <div className="animate-fade-in">
                   <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
                     ¿Cuál es el tamaño de tu empresa?
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {companySizeOptions.map((option) => (
                       <button
                         key={option.value}
                         type="button"
-                        onClick={() => setCompanySize(option.value)}
+                        onClick={() => { setCompanySize(option.value); setTimeout(() => setCurrentStep(3), 300); }}
                         className={`company-size-option p-4 ${
                           companySize === option.value ? "selected" : ""
                         }`}
@@ -361,66 +541,84 @@ const MultiStepForm = () => {
                             companySize === option.value ? "text-primary" : "text-muted-foreground"
                           }`}
                         />
-                        <span className="font-semibold text-foreground text-xs">
-                          {option.label}
-                        </span>
+                        <span className="font-semibold text-foreground text-xs">{option.label}</span>
                         {option.sublabel && (
-                          <span className="text-[10px] text-muted-foreground mt-1">
+                          <span className="text-xs text-muted-foreground mt-1">
                             {option.sublabel}
                           </span>
                         )}
                       </button>
                     ))}
                   </div>
-
-                  <div className="flex justify-end mt-6">
-                    <button
-                      type="button"
-                      onClick={nextStep}
-                      disabled={!companySize}
-                      className="btn-primary"
-                    >
-                      Siguiente
-                      <ArrowRight className="ml-2 w-4 h-4" />
+                  <div className="flex justify-start mt-6">
+                    <button type="button" onClick={prevStep} className="btn-secondary text-sm">
+                      <ArrowLeft className="mr-1 w-3.5 h-3.5" />
+                      Atrás
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Step 2: Activity */}
-              {currentStep === 2 && !isSubmitted && (
+              {/* ─── Step 2: Autónomo → Empleados ──────── */}
+              {currentStep === 2 && formPath === "autonomo" && !isSubmitted && (
                 <div className="animate-fade-in">
                   <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
-                    Actividad de tu empresa
+                    ¿Cuántos empleados tienes?
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {employeeOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => { setEmployeeCount(option.value); setTimeout(() => setCurrentStep(3), 300); }}
+                        className={`company-size-option p-4 ${
+                          employeeCount === option.value ? "selected" : ""
+                        }`}
+                      >
+                        <option.icon
+                          className={`w-6 h-6 mb-2 transition-colors ${
+                            employeeCount === option.value ? "text-primary" : "text-muted-foreground"
+                          }`}
+                        />
+                        <span className="font-semibold text-foreground text-xs">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex justify-start mt-6">
+                    <button type="button" onClick={prevStep} className="btn-secondary text-sm">
+                      <ArrowLeft className="mr-1 w-3.5 h-3.5" />
+                      Atrás
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ─── Step 3: Empresa → Actividad ─────── */}
+              {currentStep === 3 && formPath === "empresa" && !isSubmitted && (
+                <div className="animate-fade-in">
+                  <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
+                    ¿A qué se dedica tu empresa?
                   </h3>
                   <div>
-                    <label
-                      htmlFor="actividad"
-                      className="block text-sm font-medium text-foreground mb-2"
-                    >
-                      ¿A qué se dedica tu empresa?
-                    </label>
                     <input
                       type="text"
                       id="actividad"
                       name="actividad"
-                      required
                       value={formData.actividad}
                       onChange={handleInputChange}
-                      placeholder="Ej: Consultoría tecnológica, Comercio minorista..."
+                      placeholder="Ej: Hostelería, Construcción, Comercio..."
                       className="input-field"
                     />
                   </div>
-
                   <div className="flex justify-between mt-6">
-                    <button type="button" onClick={prevStep} className="btn-secondary">
-                      <ArrowLeft className="mr-2 w-4 h-4" />
-                      Anterior
+                    <button type="button" onClick={prevStep} className="btn-secondary text-sm">
+                      <ArrowLeft className="mr-1 w-3.5 h-3.5" />
+                      Atrás
                     </button>
                     <button
                       type="button"
                       onClick={nextStep}
-                      disabled={!formData.actividad.trim()}
+                      disabled={!canProceedStep3()}
                       className="btn-primary"
                     >
                       Siguiente
@@ -430,231 +628,194 @@ const MultiStepForm = () => {
                 </div>
               )}
 
-              {/* Success Screen */}
-              {isSubmitted && (
-                <div className="animate-fade-in text-center py-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 mb-6">
-                    <Check className="w-8 h-8 text-accent" />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-4">
-                    ¡Formulario enviado!
-                  </h2>
-                  <p className="text-foreground text-lg mb-2">
-                    Muy pronto nuestro equipo se pondrá en contacto contigo por correo electrónico o por teléfono.
-                  </p>
-                  <p className="text-muted-foreground text-base max-w-md mx-auto">
-                    Gracias por confiar en nosotros. Revisaremos tu solicitud y te responderemos lo antes posible.
-                  </p>
-                </div>
-              )}
-
-              {/* Step 3: SEPA Data */}
-              {currentStep === 3 && !isSubmitted && (
+              {/* ─── Step 3: Autónomo → Datos negocio ── */}
+              {currentStep === 3 && formPath === "autonomo" && !isSubmitted && (
                 <div className="animate-fade-in">
-                  <h3 className="text-lg font-heading font-semibold text-foreground mb-2 text-center">
-                    Datos para domiciliación SEPA
+                  <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
+                    Cuéntanos sobre tu negocio
                   </h3>
-                  <p className="text-muted-foreground text-sm text-center mb-5">
-                    Estos datos son necesarios para procesar el pago de forma segura.
-                  </p>
                   <div className="space-y-4">
                     <div>
-                      <label
-                        htmlFor="cif_nif"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        Identificación (NIF/CIF/NIE) *
+                      <label htmlFor="nombre_negocio" className="block text-sm font-medium text-foreground mb-2">
+                        Nombre de tu negocio *
                       </label>
                       <input
                         type="text"
-                        id="cif_nif"
-                        name="cif_nif"
-                        required
-                        value={formData.cif_nif}
+                        id="nombre_negocio"
+                        name="nombre_negocio"
+                        value={formData.nombre_negocio}
                         onChange={handleInputChange}
-                        placeholder="Ej: 12345678A, B12345678..."
+                        placeholder="Ej: Peluquería Estilo, Taller Pérez..."
                         className="input-field"
                       />
                     </div>
-
                     <div>
-                      <label
-                        htmlFor="email-facturacion"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email-facturacion"
-                        name="email_facturacion"
-                        required
-                        value={formData.email_facturacion}
-                        onChange={handleInputChange}
-                        placeholder="tu@email.com"
-                        className="input-field"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="nombre-titular"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        Nombre del responsable
+                      <label htmlFor="actividad" className="block text-sm font-medium text-foreground mb-2">
+                        Actividad / sector *
                       </label>
                       <input
                         type="text"
-                        id="nombre-titular"
-                        name="nombre_titular"
-                        required
-                        value={formData.nombre_titular}
+                        id="actividad"
+                        name="actividad"
+                        value={formData.actividad}
                         onChange={handleInputChange}
-                        placeholder="Nombre completo del responsable"
+                        placeholder="Ej: Peluquería, Fontanería, Coaching..."
                         className="input-field"
                       />
                     </div>
                     <div>
-                      <label
-                        htmlFor="telefono"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        Número de teléfono *
+                      <label htmlFor="anos_antiguedad" className="block text-sm font-medium text-foreground mb-2">
+                        Años de antigüedad *
                       </label>
-                      <input
-                        type="tel"
-                        id="telefono"
-                        name="telefono"
-                        required
-                        value={formData.telefono}
+                      <select
+                        id="anos_antiguedad"
+                        name="anos_antiguedad"
+                        value={formData.anos_antiguedad}
                         onChange={handleInputChange}
-                        placeholder="Ej: 600123456"
                         className="input-field"
-                      />
+                      >
+                        <option value="">Selecciona...</option>
+                        {antiguedadOptions.map((opt) => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
                     </div>
-
                     <div>
-                      <label
-                        htmlFor="domicilio-fiscal"
-                        className="block text-sm font-medium text-foreground mb-2"
-                      >
-                        Domicilio fiscal *
+                      <label htmlFor="facturacion_anual" className="block text-sm font-medium text-foreground mb-2">
+                        Facturación aproximada anual *
                       </label>
-                      <input
-                        type="text"
-                        id="domicilio-fiscal"
-                        name="domicilio_fiscal"
-                        required
-                        value={formData.domicilio_fiscal}
+                      <select
+                        id="facturacion_anual"
+                        name="facturacion_anual"
+                        value={formData.facturacion_anual}
                         onChange={handleInputChange}
-                        placeholder="Calle, número, piso..."
                         className="input-field"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="codigo-postal"
-                          className="block text-sm font-medium text-foreground mb-2"
-                        >
-                          Código postal *
-                        </label>
-                        <input
-                          type="text"
-                          id="codigo-postal"
-                          name="codigo_postal"
-                          required
-                          value={formData.codigo_postal}
-                          onChange={handleInputChange}
-                          placeholder="28001"
-                          className="input-field"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="ciudad"
-                          className="block text-sm font-medium text-foreground mb-2"
-                        >
-                          Ciudad *
-                        </label>
-                        <input
-                          type="text"
-                          id="ciudad"
-                          name="ciudad"
-                          required
-                          value={formData.ciudad}
-                          onChange={handleInputChange}
-                          placeholder="Madrid"
-                          className="input-field"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Terms Checkbox */}
-                    <div className="pt-3 border-t border-border">
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          id="aceptaTerminos"
-                          name="acepta_terminos"
-                          required
-                          className="mt-1 w-5 h-5 rounded border-input text-primary focus:ring-primary"
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          He leído y acepto los{" "}
-                          <a
-                            href="/terminos"
-                            target="_blank"
-                            className="text-primary hover:underline font-medium"
-                          >
-                            términos y condiciones
-                          </a>{" y "}
-                          <a
-                            href="/privacidad"
-                            target="_blank"
-                            className="text-primary hover:underline font-medium"
-                          >
-                            la política de privacidad
-                          </a>. *
-                        </span>
-                      </label>
+                      >
+                        <option value="">Selecciona...</option>
+                        {facturacionOptions.map((opt) => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-
-                  {errorMessage && (
-                    <p className="mt-4 text-sm text-destructive text-center">{errorMessage}</p>
-                  )}
-
-                  <div className="flex justify-end mt-6">
+                  <div className="flex justify-between mt-6">
+                    <button type="button" onClick={prevStep} className="btn-secondary text-sm">
+                      <ArrowLeft className="mr-1 w-3.5 h-3.5" />
+                      Atrás
+                    </button>
                     <button
                       type="button"
-                      onClick={handleSubmit}
+                      onClick={nextStep}
+                      disabled={!canProceedStep3()}
                       className="btn-primary"
-                      disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Enviando..." : "Enviar solicitud"}
-                      {!isSubmitting && <Check className="ml-2 w-4 h-4" />}
+                      Siguiente
+                      <ArrowRight className="ml-2 w-4 h-4" />
                     </button>
                   </div>
                 </div>
               )}
+
+              {/* ─── Step 4: Contact data ───────────────── */}
+              {currentStep === 4 && !isSubmitted && (
+                <div className="animate-fade-in">
+                  <h3 className="text-lg font-heading font-semibold text-foreground mb-5 text-center">
+                    Último paso: tus datos de contacto
+                  </h3>
+                  <div className="space-y-3">
+                    {/* Row 1: CIF + Email */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="cif_nif" className="block text-sm font-medium text-foreground mb-1.5">
+                          {formPath === "empresa" ? "CIF" : "NIF / NIE"}
+                        </label>
+                        <input type="text" id="cif_nif" name="cif_nif" value={formData.cif_nif} onChange={handleInputChange}
+                          placeholder={formPath === "empresa" ? "B12345678" : "12345678A"} className="input-field" />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                        <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange}
+                          placeholder="tu@email.com" className="input-field" />
+                      </div>
+                    </div>
+
+                    {/* Row 2: Nombre + Teléfono */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="nombre" className="block text-sm font-medium text-foreground mb-1.5">
+                          {formPath === "empresa" ? "Responsable" : "Nombre completo"}
+                        </label>
+                        <input type="text" id="nombre" name="nombre" value={formData.nombre} onChange={handleInputChange}
+                          placeholder="Nombre y apellidos" className="input-field" />
+                      </div>
+                      <div>
+                        <label htmlFor="telefono" className="block text-sm font-medium text-foreground mb-1.5">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" value={formData.telefono} onChange={handleInputChange}
+                          placeholder="600123456" className="input-field" />
+                      </div>
+                    </div>
+
+                    {/* Row 3: Domicilio */}
+                    <div>
+                      <label htmlFor="domicilio" className="block text-sm font-medium text-foreground mb-1.5">Domicilio fiscal</label>
+                      <input type="text" id="domicilio" name="domicilio" value={formData.domicilio} onChange={handleInputChange}
+                        placeholder="Calle, número, piso..." className="input-field" />
+                    </div>
+
+                    {/* Row 4: CP + Ciudad */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="codigo_postal" className="block text-sm font-medium text-foreground mb-1.5">C.P.</label>
+                        <input type="text" id="codigo_postal" name="codigo_postal" value={formData.codigo_postal} onChange={handleInputChange}
+                          placeholder="28001" className="input-field" />
+                      </div>
+                      <div>
+                        <label htmlFor="ciudad" className="block text-sm font-medium text-foreground mb-1.5">Ciudad</label>
+                        <input type="text" id="ciudad" name="ciudad" value={formData.ciudad} onChange={handleInputChange}
+                          placeholder="Madrid" className="input-field" />
+                      </div>
+                    </div>
+
+                    {/* Terms */}
+                    <label className="flex items-start gap-2.5 cursor-pointer pt-2">
+                      <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 rounded border-input text-primary focus:ring-primary" />
+                      <span className="text-sm text-muted-foreground">
+                        Acepto los{" "}
+                        <a href="/terminos" target="_blank" className="text-primary hover:underline">términos</a>{" y "}
+                        <a href="/privacidad" target="_blank" className="text-primary hover:underline">privacidad</a>
+                      </span>
+                    </label>
+                  </div>
+
+                  {errorMessage && (
+                    <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                      <p className="text-sm text-destructive">{errorMessage}</p>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between mt-5">
+                    <button type="button" onClick={prevStep} className="btn-secondary text-sm">
+                      <ArrowLeft className="mr-1 w-3.5 h-3.5" />
+                      Atrás
+                    </button>
+                    <button type="button" onClick={handleSubmit} className="btn-primary" disabled={isSubmitting}>
+                      {isSubmitting ? "Enviando..." : "Enviar y agendar reunión"}
+                      {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
             </div>
           </form>
 
-          {/* Security Note */}
-          <div className="mt-4 text-center">
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Tus datos están protegidos con encriptación SSL
+          {/* Security note — solo visible cuando el form no está enviado */}
+          {!isSubmitted && (
+            <p className="mt-3 text-center text-white/50 text-xs">
+              Datos protegidos · Sin compromiso
             </p>
-          </div>
+          )}
         </div>
       </div>
     </section>

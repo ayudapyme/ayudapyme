@@ -1,54 +1,63 @@
-import { CheckCircle } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 
 const Hero = () => {
-  const benefits = [
-    "Sin riesgo",
-    "Hacemos todo por ti",
-    "Solo pagas si ganamos",
-  ];
-
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-background rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-background rounded-full blur-3xl" />
-      </div>
+    <section id="inicio" className="bg-hero">
+      <div className="container-custom pt-24 pb-12 md:pt-28 md:pb-14">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
 
-      <div className="container-custom relative z-10 pt-20">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-6 animate-slide-up text-balance">
-            No pierdas más oportunidades para tu negocio
-          </h1>
+          {/* Left */}
+          <div>
+            <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-heading font-bold text-white mb-4 leading-[1.15] tracking-tight">
+              Hay dinero público para tu negocio.
+              <br className="hidden md:block" />
+              Nosotros lo conseguimos.
+            </h1>
 
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-           Te ayudaremos a encontrar todas las subvenciones disponibles para tu empresa sin que tengas que hacer prácticamente nada.
-          </p>
+            <p className="text-lg text-white/80 mb-7 max-w-md leading-relaxed">
+              Te decimos cuánto puedes cobrar, preparamos todo el papeleo y lo presentamos.
+              <strong className="text-white"> Si no te lo conceden, no pagas nada.</strong>
+            </p>
 
-          {/* Benefits */}
-          <div className="flex flex-wrap justify-center gap-4 mb-10 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 text-primary-foreground/90"
+            <div className="flex flex-col sm:flex-row gap-2.5 mb-4">
+              <a
+                href="#formulario"
+                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-cta text-white font-bold text-base transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
               >
-                <CheckCircle className="w-5 h-5 text-accent" />
-                <span className="text-sm font-medium">{benefit}</span>
-              </div>
-            ))}
+                Ver cuánto me corresponde
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="tel:+34601646362"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg border border-white/25 text-white font-medium text-base transition-colors hover:bg-white/10 active:scale-[0.98]"
+              >
+                <Phone className="w-4 h-4" />
+                601 64 63 62
+              </a>
+            </div>
+
+            <p className="text-white/60 text-sm">Gratuito · Sin compromiso · En toda España</p>
           </div>
 
-          {/* CTA Button */}
-          <div className="animate-slide-up mb-6 md:mb-0" style={{ animationDelay: "0.3s" }}>
-            <a href="#formulario" className="btn-hero group">
-              Solicitar sin compromiso
-            </a>
+          {/* Right */}
+          <div className="hidden lg:block">
+            <div className="bg-white/[0.08] border border-white/[0.12] rounded-xl p-6">
+              <p className="text-white/80 text-sm font-semibold mb-5">Ayudas disponibles para pymes</p>
+              {[
+                { name: "Kit Digital", amount: "12.000€" },
+                { name: "Kit Consulting", amount: "24.000€" },
+                { name: "Eficiencia Energética", amount: "hasta 55%" },
+                { name: "Bono Enerxía Peme", amount: "hasta 50%" },
+              ].map((s, i) => (
+                <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.08] last:border-0">
+                  <span className="text-white text-base font-medium">{s.name}</span>
+                  <span className="text-white font-heading font-bold text-lg">{s.amount}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-
     </section>
   );
 };

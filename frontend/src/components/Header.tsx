@@ -2,131 +2,97 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const navLinks = [
+  { href: "#como-funciona", label: "Cómo funciona" },
+  { href: "#faq", label: "Preguntas" },
+  { href: "#contacto", label: "Contacto" },
+];
+
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: "#inicio", label: "Inicio", type: "hash" as const },
-    { href: "#quienes-somos", label: "Quiénes somos", type: "hash" as const },
-    { href: "#faq", label: "Preguntas frecuentes", type: "hash" as const },
-    { href: "#formulario", label: "Formulario", type: "hash" as const },
-    { href: "#contacto", label: "Contacto", type: "hash" as const },
-  ];
-
-  const linkBaseClasses = (isScrolled: boolean) =>
-    `font-semibold transition-colors ${
-      isScrolled
-        ? "text-foreground hover:text-primary"
-        : "text-white/90 hover:text-white"
-    }`;
-
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-card/95 backdrop-blur-md shadow-md border-border/30"
-          : "hero-gradient border-white/15"
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-border"
+          : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* LOGO */}
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-14">
           <Link to="/" className="flex items-center gap-2">
             <img
               src={isScrolled ? "/logo-dark.png" : "/logo-light.png"}
-              alt="AyudaPyme logo"
-              className="w-10 h-10 object-contain transition-all duration-300"
+              alt="AyudaPyme"
+              className="w-6 h-6 object-contain"
             />
-
-            {!isScrolled && (
-              <span className="font-heading font-bold text-xl text-white">
-                AyudaPyme
-              </span>
-            )}
+            <span className={`font-heading font-bold text-[15px] transition-colors ${isScrolled ? "text-foreground" : "text-white"}`}>
+              AyudaPyme
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) =>
-              link.type === "hash" ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={linkBaseClasses(isScrolled)}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className={linkBaseClasses(isScrolled)}
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
+          <nav className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`text-[13px] font-medium transition-colors ${
+                  isScrolled ? "text-muted-foreground hover:text-foreground" : "text-white/50 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#formulario"
+              className={`px-4 py-1.5 rounded-md font-semibold text-[13px] transition-all ${
+                isScrolled
+                  ? "bg-cta text-white hover:brightness-110"
+                  : "bg-white/90 text-foreground hover:bg-white"
+              }`}
+            >
+              Análisis gratuito
+            </a>
           </nav>
 
-          {/* Mobile Menu Button */}
           <button
-            className={`md:hidden p-2 ${
-              isScrolled ? "text-foreground" : "text-white"
-            }`}
+            className={`md:hidden p-1.5 rounded-md ${isScrolled ? "text-foreground" : "text-white"}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label="Menú"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav
-            className={`md:hidden py-4 border-t animate-fade-in ${
-              isScrolled ? "border-border" : "border-white/15"
-            }`}
-          >
-            <div className="flex flex-col gap-4">
-              {navLinks.map((link) =>
-                link.type === "hash" ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className={`font-semibold py-2 transition-colors ${
-                      isScrolled
-                        ? "text-foreground hover:text-primary"
-                        : "text-white hover:text-white/80"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`font-semibold py-2 transition-colors ${
-                      isScrolled
-                        ? "text-foreground hover:text-primary"
-                        : "text-white hover:text-white/80"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
-            </div>
+          <nav className={`md:hidden py-2 border-t ${isScrolled ? "border-border" : "border-white/10"}`}>
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`block px-2 py-2 rounded text-sm font-medium ${
+                  isScrolled ? "text-muted-foreground" : "text-white/60"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#formulario"
+              className="block mt-1 px-4 py-2 rounded-md bg-cta text-white font-semibold text-sm text-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Análisis gratuito
+            </a>
           </nav>
         )}
       </div>

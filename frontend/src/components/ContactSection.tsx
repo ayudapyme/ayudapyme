@@ -1,58 +1,36 @@
-import { Link } from "react-router-dom";
+import { Phone, Mail } from "lucide-react";
 
 export default function ContactSection() {
   return (
-    <section id="contacto" className="section-padding bg-background">
+    <section id="contacto" className="py-14 md:py-20">
       <div className="container-custom">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-            Contacta con nosotros
+        <div className="max-w-xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-2">
+            Llámanos. Te lo explicamos en 5 minutos.
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Si tienes dudas sobre las subvenciones, el proceso o quieres que revisemos tu caso,
-            escríbenos o solicita una llamada.
+          <p className="text-muted-foreground text-base mb-8">
+            Sin compromiso, sin letra pequeña.
           </p>
-        </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="rounded-2xl bg-[#f5f7fa] border border-[#e3e8ef] shadow p-8 text-[#1a202c] transition-all">
-            <h3 className="text-2xl font-bold mb-3 flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-              Horario de llamadas
-            </h3>
-            <p className="text-sm text-[#4b5563] mb-2">(hora peninsular española):</p>
-            <ul className="space-y-1 text-base font-medium">
-              <li>Lunes a viernes: 10:00 – 19:00 <span className="ml-2 font-semibold text-primary">601 64 63 62</span></li>
-              <li>Lunes a viernes: 11:00 – 19:00 <span className="ml-2 font-semibold text-primary">611 08 59 21</span></li>
-            </ul>
-            <p className="mt-4 text-sm text-[#6b7280]">
-              Indica tu disponibilidad en el formulario y ajustaremos la llamada lo máximo posible.
-            </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+            <a
+              href="tel:+34601646362"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-cta text-white font-bold text-base hover:brightness-110 active:scale-[0.98] transition-all"
+            >
+              <Phone className="w-4 h-4" />
+              601 64 63 62
+            </a>
+            <a
+              href="mailto:admin@ayudapyme.es"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-border text-foreground font-semibold text-base hover:shadow-sm active:scale-[0.98] transition-all"
+            >
+              <Mail className="w-4 h-4 text-muted-foreground" />
+              admin@ayudapyme.es
+            </a>
           </div>
 
-          <div className="rounded-2xl bg-[#f5f7fa] border border-[#e3e8ef] shadow p-8 flex flex-col justify-between text-[#1a202c] transition-all">
-            <div>
-              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-                Correo electrónico
-              </h3>
-              <p className="text-sm text-[#4b5563] mb-4">
-                Si lo prefieres, puedes escribirnos directamente.
-              </p>
-              <a
-                href="mailto:admin@ayudapyme.es"
-                className="inline-flex items-center font-semibold underline underline-offset-4 hover:text-primary"
-              >
-                admin@ayudapyme.es
-              </a>
-            </div>
-            <p className="mt-6 text-xs text-[#6b7280]">
-              Cuanta más información (sector, tamaño, ubicación), más precisa será la respuesta.
-            </p>
-          </div>
+          <p className="text-muted-foreground text-sm">L-V de 10:00 a 19:00 · Respondemos en menos de 24h</p>
         </div>
-
-        {/* Eliminado el botón y el texto de ir al formulario */}
       </div>
     </section>
   );
