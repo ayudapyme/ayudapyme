@@ -139,7 +139,43 @@ app.post('/api/formulario/alta', async (req, res) => {
 
     console.info('[cliente] creado/actualizado:', nif);
 
-    // 4. Disparar n8n para emails (fire-and-forget, no bloqueamos)
+    // 4. Crear contacto en HubSpot (fire-and-forget)
+    const hubspotToken = process.env.HUBSPOT_TOKEN;
+    if (hubspotToken) {
+      const nameParts = nombre.split(' ');
+      const firstname = nameParts[0] || '';
+      const lastname = nameParts.slice(1).join(' ') || '';
+
+      fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${hubspotToken}`,
+        },
+        body: JSON.stringify({
+          properties: {
+            email,
+            firstname,
+            lastname,
+            phone: telefono,
+            company: clienteData.nombre_empresa,
+            city: ciudad,
+            zip: cp,
+            address: domicilio,
+            jobtitle: actividad,
+            hs_lead_status: 'NEW',
+          },
+        }),
+      })
+        .then(r => {
+          if (r.ok) console.info('[hubspot] contacto creado:', email);
+          else if (r.status === 409) console.info('[hubspot] contacto ya existe:', email);
+          else r.text().then(t => console.warn('[hubspot] error:', r.status, t));
+        })
+        .catch(err => console.warn('[hubspot] dispatch failed:', err.message));
+    }
+
+    // 5. Disparar n8n para emails (fire-and-forget)
     const n8nUrl = process.env.N8N_WEBHOOK_URL;
     if (n8nUrl) {
       fetch(n8nUrl, {
@@ -155,7 +191,7 @@ app.post('/api/formulario/alta', async (req, res) => {
       }).catch(err => console.warn('[n8n] email dispatch failed:', err.message));
     }
 
-    // 5. Responder OK al frontend
+    // 6. Responder OK al frontend
     res.json({ ok: true, nif });
 
   } catch (err) {
