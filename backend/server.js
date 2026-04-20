@@ -200,6 +200,81 @@ app.post('/api/formulario/alta', async (req, res) => {
   }
 });
 
+// --- POST /api/calendly/webhook ---
+// Calendly envía evento cuando alguien agenda o cancela reunión
+
+app.post('/api/calendly/webhook', async (req, res) => {
+  res.json({ ok: true }); // Responder rápido a Calendly
+
+  try {
+    const { event, payload } = req.body;
+    const invitee = payload?.invitee || {};
+    const scheduledEvent = payload?.scheduled_event || {};
+    const email = invitee.email;
+    const name = invitee.name || '';
+    const startTime = scheduledEvent.start_time;
+
+    console.info(`[calendly] ${event}:`, email, startTime);
+
+    if (event === 'invitee.created') {
+      // 1. Notificar al equipo por email via n8n
+      const n8nUrl = process.env.N8N_WEBHOOK_URL;
+      if (n8nUrl) {
+        fetch(n8nUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipo_evento: 'reunion_agendada',
+            nombre: name,
+            email,
+            fecha_reunion: startTime,
+            evento: scheduledEvent.name,
+            ubicacion: scheduledEvent.location?.join_url || 'Sin ubicación',
+          }),
+        }).catch(err => console.warn('[n8n] calendly notify failed:', err.message));
+      }
+
+      // 2. Actualizar HubSpot: buscar contacto por email y actualizar lead status
+      const hubspotToken = process.env.HUBSPOT_TOKEN;
+      if (hubspotToken && email) {
+        fetch(`https://api.hubapi.com/crm/v3/objects/contacts/search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${hubspotToken}`,
+          },
+          body: JSON.stringify({
+            filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: email }] }],
+          }),
+        })
+          .then(r => r.json())
+          .then(data => {
+            const contactId = data.results?.[0]?.id;
+            if (!contactId) return console.info('[hubspot] contacto no encontrado para:', email);
+
+            return fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${hubspotToken}`,
+              },
+              body: JSON.stringify({
+                properties: {
+                  hs_lead_status: 'IN_PROGRESS',
+                  notes_last_updated: new Date().toISOString(),
+                },
+              }),
+            });
+          })
+          .then(() => console.info('[hubspot] lead status actualizado:', email))
+          .catch(err => console.warn('[hubspot] calendly update failed:', err.message));
+      }
+    }
+  } catch (err) {
+    console.error('[calendly] webhook error:', err);
+  }
+});
+
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
