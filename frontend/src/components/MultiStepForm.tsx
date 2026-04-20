@@ -283,7 +283,7 @@ const MultiStepForm = () => {
 
     const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
     if (!webhookUrl) {
-      setErrorMessage("Error de configuración. Contacta con soporte.");
+      setErrorMessage("Error interno. Llámanos al 601 64 63 62 o escríbenos a admin@ayudapyme.es.");
       setIsSubmitting(false);
       return;
     }
@@ -326,12 +326,12 @@ const MultiStepForm = () => {
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Error al enviar el formulario.");
+        throw new Error(errorData.error || "No hemos podido enviar tus datos. Llámanos al 601 64 63 62 y te atendemos directamente.");
       }
       setIsSubmitted(true);
     } catch (err: any) {
       console.error(err);
-      setErrorMessage(err.message || "Ha ocurrido un error al enviar el formulario.");
+      setErrorMessage(err.message || "No hemos podido enviar tus datos. Llámanos al 601 64 63 62 y te atendemos directamente.");
     } finally {
       setIsSubmitting(false);
     }

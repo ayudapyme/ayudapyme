@@ -99,7 +99,7 @@ const Portal = () => {
               onClick={() => { localStorage.removeItem("ayudapyme_token"); window.location.href = "/"; }}
               className="text-xs text-muted-foreground hover:text-foreground underline"
             >
-              Cerrar sesion
+              Cerrar sesión
             </button>
           </div>
         </div>
@@ -118,8 +118,8 @@ const Portal = () => {
             <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center mb-3">
               <Clock className="w-5 h-5 text-accent" />
             </div>
-            <h3 className="font-semibold text-foreground mb-1">Autorizacion</h3>
-            <p className="text-sm text-muted-foreground mb-3">Tu autorizacion esta siendo tramitada.</p>
+            <h3 className="font-semibold text-foreground mb-1">Autorización</h3>
+            <p className="text-sm text-muted-foreground mb-3">Tu autorización está siendo tramitada.</p>
             <span className="inline-block text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
               En proceso
             </span>
@@ -141,7 +141,7 @@ const Portal = () => {
               <FileText className="w-5 h-5 text-muted-foreground" />
             </div>
             <h3 className="font-semibold text-foreground mb-1">Expedientes</h3>
-            <p className="text-sm text-muted-foreground mb-3">Cuando presentemos solicitudes apareceran aqui.</p>
+            <p className="text-sm text-muted-foreground mb-3">Cuando presentemos solicitudes aparecerán aquí.</p>
             <span className="inline-block text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
               Sin expedientes
             </span>
@@ -152,9 +152,9 @@ const Portal = () => {
           <div className="flex items-start gap-3">
             <CheckCircle className="w-5 h-5 text-accent mt-0.5" />
             <div>
-              <h3 className="font-semibold text-foreground">Tu autorizacion esta en proceso</h3>
+              <h3 className="font-semibold text-foreground">Tu autorización está en proceso</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Recibiras un email cuando este activa (2-5 dias laborables).
+                Recibirás un email cuando esté activa (2-5 días laborables).
                 Mientras tanto, ya estamos analizando tu empresa para encontrar subvenciones compatibles.
               </p>
             </div>

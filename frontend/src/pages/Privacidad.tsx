@@ -11,7 +11,7 @@ const Privacidad = () => {
         <p className="text-primary-foreground/80 mt-4 max-w-2xl mx-auto text-lg">
           Información sobre cómo gestionamos tus datos personales en AyudaPyme.
         </p>
-        <p className="text-right text-sm text-muted-foreground mt-2">Última actualización: 20/01/26</p>
+        <p className="text-right text-sm text-muted-foreground mt-2">Última actualización: 20/04/2026</p>
       </header>
 
       {/* Content section */}
@@ -22,7 +22,7 @@ const Privacidad = () => {
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">1. Responsable del tratamiento</h2>
             <p>
-              El responsable del tratamiento de los datos es AyudaPyme. Puedes contactar para cualquier cuestión relacionada con privacidad a través del email <a href="mailto:admin@ayudapyme.es" className="text-primary font-semibold hover:underline">info@ayudapyme.es</a>.
+              El responsable del tratamiento de los datos es AyudaPyme. Puedes contactar para cualquier cuestión relacionada con privacidad a través del email <a href="mailto:admin@ayudapyme.es" className="text-primary font-semibold hover:underline">admin@ayudapyme.es</a>.
             </p>
           </section>
 
@@ -84,7 +84,7 @@ const Privacidad = () => {
               <li>Portabilidad</li>
               <li>Retirada del consentimiento en cualquier momento</li>
             </ul>
-            <p className="mt-2">Para ejercer estos derechos, contacta en <a href="mailto:info@ayudapyme.es" className="text-primary font-semibold hover:underline">info@ayudapyme.es</a>.</p>
+            <p className="mt-2">Para ejercer estos derechos, contacta en <a href="mailto:admin@ayudapyme.es" className="text-primary font-semibold hover:underline">admin@ayudapyme.es</a>.</p>
           </section>
 
           <section>

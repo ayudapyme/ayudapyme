@@ -51,10 +51,10 @@ const Contacto = () => {
                   responderemos con una valoración clara y sin compromiso.
                 </p>
                 <a
-                  href="mailto:info@ayudapyme.es"
+                  href="mailto:admin@ayudapyme.es"
                   className="inline-flex items-center font-medium underline underline-offset-4 hover:no-underline"
                 >
-                  info@ayudapyme.es
+                  admin@ayudapyme.es
                 </a>
               </div>
               <div className="mt-6">
