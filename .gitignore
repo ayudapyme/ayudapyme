@@ -45,3 +45,10 @@ tsconfig.tsbuildinfo
 # Supabase local
 supabase/.branches/
 supabase/.temp/
+
+# Claude Code / AI tools
+.agents/
+.claude/
+.junie/
+frontend/.claude/
+skills-lock.json
