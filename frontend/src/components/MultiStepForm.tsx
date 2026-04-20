@@ -281,12 +281,8 @@ const MultiStepForm = () => {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
-    if (!webhookUrl) {
-      setErrorMessage("Error interno. Llámanos al 601 64 63 62 o escríbenos a admin@ayudapyme.es.");
-      setIsSubmitting(false);
-      return;
-    }
+    const apiUrl = import.meta.env.VITE_API_URL || "";
+    const endpoint = `${apiUrl}/api/formulario/alta`;
 
     const common = {
       cif_nif: normalizeId(formData.cif_nif),
@@ -297,7 +293,7 @@ const MultiStepForm = () => {
       ciudad: formData.ciudad.trim(),
       actividad: formData.actividad.trim(),
       acepta_terminos: true,
-      origen: "entrevista-web",
+      origen: "web",
     };
 
     const payload =
@@ -319,7 +315,7 @@ const MultiStepForm = () => {
           };
 
     try {
-      const response = await fetch(webhookUrl, {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

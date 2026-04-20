@@ -1,50 +1,65 @@
-// server.js
+// server.js — Backend AyudaPyme
+// Responsabilidades: validar, crear cliente en Supabase, disparar emails via n8n
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { randomUUID } = require('crypto');
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 
+// CORS: permitir frontend en produccion y local
+const allowedOrigins = [
+  'https://ayudapyme.es',
+  'https://www.ayudapyme.es',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'http://localhost:8082',
+  'http://localhost:8083',
+  'http://localhost:8084',
+  'http://localhost:8085',
+  'http://localhost:5173',
+];
 
-
-app.use(cors());
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(null, false);
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
-// --- Helpers para validar NIF/NIE/CIF --
+// Supabase client (service role para insertar sin RLS)
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
+);
+
+// --- Validacion NIF/NIE/CIF ---
 
 const NIF_MAP = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
-function normalizeId(value) {
-  if (!value) return '';
-  return String(value).toUpperCase().replace(/[\s-]+/g, '');
+function normalizeId(v) {
+  if (!v) return '';
+  return String(v).toUpperCase().replace(/[\s-]+/g, '');
 }
 
 function isValidNIF(v) {
   v = normalizeId(v);
   if (!/^[0-9]{8}[A-Z]$/.test(v)) return false;
-  const num = parseInt(v.slice(0, 8), 10);
-  const letter = v[8];
-  const expected = NIF_MAP[num % 23];
-  return letter === expected;
+  return v[8] === NIF_MAP[parseInt(v.slice(0, 8), 10) % 23];
 }
 
 function isValidNIE(v) {
   v = normalizeId(v);
   if (!/^[XYZ][0-9]{7}[A-Z]$/.test(v)) return false;
   const map = { X: '0', Y: '1', Z: '2' };
-  const numPart = map[v[0]] + v.slice(1, 8);
-  const letter = v[8];
-  const expected = NIF_MAP[parseInt(numPart, 10) % 23];
-  return letter === expected;
+  return v[8] === NIF_MAP[parseInt(map[v[0]] + v.slice(1, 8), 10) % 23];
 }
 
 function sumDigits(n) {
-  n = parseInt(n, 10);
-  if (n < 10) return n;
-  return Math.floor(n / 10) + (n % 10);
+  return n < 10 ? n : Math.floor(n / 10) + (n % 10);
 }
 
 function isValidCIF(v) {
@@ -53,163 +68,106 @@ function isValidCIF(v) {
   const first = v[0].toUpperCase();
   const body = v.slice(1, 8);
   const control = v[8].toUpperCase();
-  let sumEven = 0;
-  let sumOdd = 0;
-
+  let sumEven = 0, sumOdd = 0;
   for (let i = 0; i < 7; i++) {
     const d = parseInt(body[i], 10);
-    const pos = i + 1;
-    if (pos % 2 === 0) {
-      sumEven += d;
-    } else {
-      sumOdd += sumDigits(d * 2);
-    }
+    if ((i + 1) % 2 === 0) sumEven += d;
+    else sumOdd += sumDigits(d * 2);
   }
-  const total = sumEven + sumOdd;
-  const digit = (10 - (total % 10)) % 10;
+  const digit = (10 - ((sumEven + sumOdd) % 10)) % 10;
   const letter = 'JABCDEFGHI'[digit];
-  const mustBeDigit = 'ABEH'.includes(first);
-  const mustBeLetter = 'KPQSW'.includes(first);
-
-  if (mustBeDigit) return control === String(digit);
-  if (mustBeLetter) return control === letter;
+  if ('ABEH'.includes(first)) return control === String(digit);
+  if ('KPQSW'.includes(first)) return control === letter;
   return control === String(digit) || control === letter;
 }
 
 function isValidSpanishId(v) {
   v = normalizeId(v);
-  if (!v) return false;
-  return isValidNIF(v) || isValidNIE(v) || isValidCIF(v);
+  return !!v && (isValidNIF(v) || isValidNIE(v) || isValidCIF(v));
 }
 
+// --- POST /api/formulario/alta ---
 
-// --- Endpoint /api/formulario/alta -> reenvío a n8n ---
-
-app.post('/api/formulario/alta', (req, res) => {
-  const eventId = randomUUID();
-  const body = req.body || {};
-
-  // Respondemos siempre rápido al frontend
+app.post('/api/formulario/alta', async (req, res) => {
   try {
-    res.json({ ok: true });
-  } catch (_) {}
+    const body = req.body || {};
 
-  const isNonEmpty = (v) => typeof v === 'string' && v.trim().length > 0;
-  const emailRegex = /^\S+@\S+\.\S+$/;
+    // 1. Validar campos obligatorios
+    const nif = normalizeId(body.cif_nif);
+    const email = (body.email || '').trim();
+    const nombre = (body.nombre_responsable || body.nombre_completo || '').trim();
+    const telefono = (body.telefono || '').trim();
+    const domicilio = (body.domicilio || '').trim();
+    const cp = (body.codigo_postal || '').trim();
+    const ciudad = (body.ciudad || '').trim();
+    const actividad = (body.actividad || '').trim();
 
-  // Adaptado a TU NUEVO formulario
-  const nombre = body.nombre_titular || body.nombre || '';
-  const email = body.email_facturacion || body.email || '';
-  const cif_nif = body.cif_nif || '';
-
-  const validNombre = isNonEmpty(nombre);
-  const validEmail = isNonEmpty(email) && emailRegex.test(email.trim());
-  const validId = !cif_nif || isValidSpanishId(cif_nif);
-
-  if (!validNombre || !validEmail || !validId) {
-    console.warn('[n8n] validation_failed', {
-      eventId,
-      validNombre,
-      validEmail,
-      validId,
-      body,
-    });
-    return;
-  }
-
-  const {
-  iban_titular,         
-  ...safeBody               
-} = body;
-
-// Construimos EXACTAMENTE lo que n8n recibía antes
-const payload = {
-  tamano_empresa: safeBody.tamano_empresa,
-  actividad: safeBody.actividad,
-  cif_nif: safeBody.cif_nif,
-  domicilio_fiscal: safeBody.domicilio_fiscal,
-  codigo_postal: safeBody.codigo_postal,
-  ciudad: safeBody.ciudad,
-  acepta_terminos: safeBody.acepta_terminos,
-  origen: safeBody.origen,
-
-  // Campos nuevos normalizados
-  nombre_normalizado: nombre,
-  email_normalizado: email,
-
-  eventId,
-  timestamp: new Date().toISOString(),
-};
-
-  console.info('[n8n] payload_to_send', { eventId, payload });
-
-  let n8nUrl = process.env.N8N_WEBHOOK_URL;
-  const n8nUrlDocker = process.env.N8N_WEBHOOK_URL_DOCKER;
-  const secret = process.env.N8N_WEBHOOK_SECRET || '';
-  const timeoutMs = Number(process.env.N8N_WEBHOOK_TIMEOUT_MS || 5000);
-  const maxRetries = Math.max(0, Number(process.env.N8N_WEBHOOK_RETRIES || 3));
-
-  const isDocker =
-    process.env.NODE_ENV === 'docker' ||
-    process.env.NODE_ENV === 'production' ||
-    require('os').hostname().includes('docker') ||
-    require('os').hostname().includes('compose');
-
-  if (isDocker && n8nUrlDocker) {
-    n8nUrl = n8nUrlDocker;
-  }
-
-  if (!n8nUrl) {
-    console.error('[n8n] missing_webhook_url', { eventId });
-    return;
-  }
-
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  (async () => {
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      const controller = new AbortController();
-      const to = setTimeout(() => controller.abort(), timeoutMs);
-      try {
-        const resp = await fetch(n8nUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            formulario: secret,
-          },
-          body: JSON.stringify(payload),
-          signal: controller.signal,
-        });
-        clearTimeout(to);
-
-        if (resp.ok) {
-          console.info('[n8n] dispatched', { eventId, status: resp.status });
-          return;
-        }
-        const text = await resp.text().catch(() => '');
-        console.warn('[n8n] non_200', {
-          eventId,
-          status: resp.status,
-          body: text?.slice(0, 300),
-        });
-      } catch (err) {
-        console.warn('[n8n] dispatch_error', { eventId, error: String(err) });
-      } finally {
-        clearTimeout(to);
-      }
-
-      const delay = Math.min(
-        500 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 250),
-        5000
-      );
-      await sleep(delay);
+    if (!nif || !isValidSpanishId(nif)) {
+      return res.status(400).json({ error: 'NIF/CIF no valido.' });
+    }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ error: 'Email no valido.' });
+    }
+    if (!nombre) {
+      return res.status(400).json({ error: 'Nombre obligatorio.' });
     }
 
-    console.error('[n8n] failed_after_retries', { eventId, retries: maxRetries });
-  })();
+    // 2. Preparar datos del cliente
+    const clienteData = {
+      nif,
+      nombre_empresa: body.tipo === 'autonomo' ? (body.nombre_negocio || nombre) : nombre,
+      nombre_normalizado: nombre,
+      email_normalizado: email,
+      telefono,
+      actividad,
+      domicilio_fiscal: domicilio,
+      codigo_postal: cp,
+      ciudad,
+      tamano_empresa: body.tamano_empresa || body.num_empleados || null,
+      origen: body.origen || 'web',
+    };
+
+    // 3. Upsert en Supabase (si ya existe el NIF, actualiza)
+    const { error: dbError } = await supabase
+      .from('cliente')
+      .upsert(clienteData, { onConflict: 'nif' });
+
+    if (dbError) {
+      console.error('[supabase] error creando cliente:', dbError);
+      return res.status(500).json({ error: 'Error guardando datos.' });
+    }
+
+    console.info('[cliente] creado/actualizado:', nif);
+
+    // 4. Disparar n8n para emails (fire-and-forget, no bloqueamos)
+    const n8nUrl = process.env.N8N_WEBHOOK_URL;
+    if (n8nUrl) {
+      fetch(n8nUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...clienteData,
+          tipo: body.tipo,
+          nombre_negocio: body.nombre_negocio,
+          anos_antiguedad: body.anos_antiguedad,
+          facturacion_anual: body.facturacion_anual,
+        }),
+      }).catch(err => console.warn('[n8n] email dispatch failed:', err.message));
+    }
+
+    // 5. Responder OK al frontend
+    res.json({ ok: true, nif });
+
+  } catch (err) {
+    console.error('[server] error:', err);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
 });
+
+// Health check
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
+  console.log(`Backend AyudaPyme en http://localhost:${PORT}`);
 });
