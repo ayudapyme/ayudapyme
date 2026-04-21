@@ -4,37 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- TÍTULO Y SEO PRINCIPAL -->
-    <title>AyudaPyme | Soluciones rápidas para autónomos y pequeñas empresas</title>
-    <meta 
-      name="description" 
-      content="AyudaPyme te ayuda a gestionar trámites fiscales y administrativos de forma sencilla y rápida. Profesionales a tu servicio, 100% online."
+    <!-- TITULO Y SEO PRINCIPAL -->
+    <title>Subvenciones para pymes y autónomos | AyudaPyme - Solo pagas si te la conceden</title>
+    <meta
+      name="description"
+      content="Encontramos subvenciones para tu negocio y las tramitamos por ti. 0€ de entrada, solo pagas el 15% si te la conceden. Kit Digital, Kit Consulting, ayudas autonómicas y más. Análisis gratuito en 48h."
     />
     <meta name="author" content="AyudaPyme" />
-    <meta 
-      name="keywords" 
-      content="gestoría, autónomos, pymes, trámites, fiscalidad, empresas, ayudas, subvenciones"
+    <meta
+      name="keywords"
+      content="subvenciones pymes, subvenciones autónomos, ayudas empresas, Kit Digital, Kit Consulting, subvenciones a fondo perdido, ayudas comunidades autónomas, tramitación subvenciones, BDNS, ayudas negocio, subvenciones España 2026"
     />
+    <meta name="robots" content="index, follow" />
 
     <!-- CANONICAL -->
-    <link rel="canonical" href="https://ayudapyme.es" />
+    <link rel="canonical" href="https://ayudapyme.es/" />
 
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="/favicon.png" />
 
     <!-- OPEN GRAPH (Facebook, LinkedIn, WhatsApp...) -->
-    <meta property="og:title" content="AyudaPyme | Soluciones para autónomos y PYMES" />
-    <meta property="og:description" content="Gestión administrativa online, trámites rápidos y soporte profesional." />
+    <meta property="og:title" content="Subvenciones para tu negocio | AyudaPyme" />
+    <meta property="og:description" content="Te encontramos las subvenciones que encajan con tu empresa y las tramitamos. 0€ de entrada, solo pagas si te la conceden." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/ayudapyme-og.png" />
-    <meta property="og:url" content="https://ayudapyme.es" />
+    <meta property="og:image" content="https://ayudapyme.es/ayudapyme-og.png" />
+    <meta property="og:url" content="https://ayudapyme.es/" />
     <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="AyudaPyme" />
 
     <!-- TWITTER -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AyudaPyme | Soluciones para autónomos y PYMES" />
-    <meta name="twitter:description" content="Gestiones rápidas, soporte experto y 100% online." />
-    <meta name="twitter:image" content="/ayudapyme-og.png" />
+    <meta name="twitter:title" content="Subvenciones para tu negocio | AyudaPyme" />
+    <meta name="twitter:description" content="0€ de entrada. Solo pagas el 15% si te conceden la subvención. Análisis gratuito en 48h." />
+    <meta name="twitter:image" content="https://ayudapyme.es/ayudapyme-og.png" />
+
+    <!-- STRUCTURED DATA (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "AyudaPyme",
+      "url": "https://ayudapyme.es",
+      "logo": "https://ayudapyme.es/favicon.png",
+      "description": "Plataforma de tramitación de subvenciones a éxito para pymes y autónomos en España. Solo pagas si te la conceden.",
+      "telephone": "+34601646362",
+      "email": "admin@ayudapyme.es",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "A Coruña",
+        "addressRegion": "Galicia",
+        "addressCountry": "ES"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "España"
+      },
+      "priceRange": "0€ entrada - 15% a éxito",
+      "sameAs": []
+    }
+    </script>
 
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DV5PM9J4DX"></script>
@@ -45,9 +73,8 @@
       gtag('config', 'G-DV5PM9J4DX');
     </script>
   </head>
-
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

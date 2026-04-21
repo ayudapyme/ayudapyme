@@ -68,7 +68,7 @@ const Privacidad = () => {
           <section>
             <h2 className="text-2xl font-heading font-semibold mb-3">6. Destinatarios y subcontratación</h2>
             <p>
-              Los datos podrán ser comunicados a gestorías, asesores o colaboradores externos para la gestión o análisis de subvenciones, siempre bajo acuerdos de confidencialidad y solo para la finalidad indicada. No se cederán datos a terceros salvo obligación legal.
+              Los datos podrán ser comunicados a profesionales externos, asesores o colaboradores especializados para la tramitación o análisis de subvenciones, siempre bajo acuerdos de confidencialidad y solo para la finalidad indicada. No se cederán datos a terceros salvo obligación legal.
             </p>
           </section>
 

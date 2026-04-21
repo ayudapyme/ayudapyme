@@ -66,7 +66,7 @@ const Terminos = () => {
           </p>
           <h2 className="text-2xl font-heading font-semibold">7. Subcontratación</h2>
           <p>
-            La plataforma puede colaborar con gestorías, asesores o terceros para la tramitación o análisis de subvenciones.<br/>
+            La plataforma puede colaborar con profesionales externos, asesores o tramitadores especializados para la tramitación o análisis de subvenciones.<br/>
             Estos terceros actúan de forma independiente y bajo sus propios términos.
           </p>
           <h2 className="text-2xl font-heading font-semibold">8. Propiedad intelectual</h2>
