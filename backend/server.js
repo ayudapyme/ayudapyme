@@ -127,7 +127,36 @@ app.post('/api/formulario/alta', async (req, res) => {
       origen: body.origen || 'web',
     };
 
-    // 3. Upsert en Supabase (si ya existe el NIF, actualiza)
+    // 3. Insertar en formulario (registro raw completo)
+    const formularioData = {
+      tipo: body.tipo || 'empresa',
+      tamano: body.tamano_empresa || body.num_empleados || null,
+      num_empleados: body.tipo === 'autonomo' ? (body.num_empleados || null) : null,
+      actividad,
+      nombre_negocio: body.nombre_negocio || null,
+      anos_antiguedad: body.anos_antiguedad || null,
+      facturacion_anual: body.facturacion_anual || null,
+      cif_nif: nif,
+      email,
+      nombre,
+      telefono,
+      domicilio,
+      codigo_postal: cp,
+      ciudad,
+    };
+
+    const { error: formError } = await supabase
+      .from('formulario')
+      .insert(formularioData);
+
+    if (formError) {
+      console.error('[supabase] error insertando formulario:', formError);
+      return res.status(500).json({ error: 'Error guardando formulario.' });
+    }
+
+    console.info('[formulario] insertado:', nif);
+
+    // 4. Upsert en cliente (si ya existe el NIF, actualiza)
     const { error: dbError } = await supabase
       .from('cliente')
       .upsert(clienteData, { onConflict: 'nif' });
@@ -139,7 +168,7 @@ app.post('/api/formulario/alta', async (req, res) => {
 
     console.info('[cliente] creado/actualizado:', nif);
 
-    // 4. Crear contacto en HubSpot (fire-and-forget)
+    // 5. Crear contacto en HubSpot (fire-and-forget)
     const hubspotToken = process.env.HUBSPOT_TOKEN;
     if (hubspotToken) {
       const nameParts = nombre.split(' ');
@@ -175,7 +204,7 @@ app.post('/api/formulario/alta', async (req, res) => {
         .catch(err => console.warn('[hubspot] dispatch failed:', err.message));
     }
 
-    // 5. Disparar n8n para emails (fire-and-forget)
+    // 6. Disparar n8n para emails (fire-and-forget)
     const n8nUrl = process.env.N8N_WEBHOOK_URL;
     if (n8nUrl) {
       fetch(n8nUrl, {
@@ -191,7 +220,7 @@ app.post('/api/formulario/alta', async (req, res) => {
       }).catch(err => console.warn('[n8n] email dispatch failed:', err.message));
     }
 
-    // 6. Responder OK al frontend
+    // 7. Responder OK al frontend
     res.json({ ok: true, nif });
 
   } catch (err) {
