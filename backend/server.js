@@ -220,7 +220,41 @@ app.post('/api/formulario/alta', async (req, res) => {
       }).catch(err => console.warn('[n8n] email dispatch failed:', err.message));
     }
 
-    // 7. Responder OK al frontend
+    // 7. Enviar alerta por email a Samuel y Jorge via Gmail MCP / n8n
+    // Notificacion directa al equipo (independiente de n8n)
+    const alertEmails = ['sfreirer244@gmail.com', 'admin@ayudapyme.es', 'jorgecaramesotero2@gmail.com'];
+    const alertSubject = `🚨 NUEVO REGISTRO: ${clienteData.nombre_empresa} (${nif})`;
+    const alertBody = [
+      `Nuevo registro en ayudapyme.es`,
+      ``,
+      `Empresa: ${clienteData.nombre_empresa}`,
+      `NIF: ${nif}`,
+      `Contacto: ${nombre}`,
+      `Email: ${email}`,
+      `Telefono: ${telefono}`,
+      `Ciudad: ${ciudad}`,
+      `Actividad: ${actividad}`,
+      `Tipo: ${body.tipo || 'empresa'}`,
+      ``,
+      `Fecha: ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}`,
+    ].join('\n');
+
+    // Usar n8n para enviar las alertas (fire-and-forget)
+    if (n8nUrl) {
+      fetch(n8nUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo_evento: 'alerta_registro',
+          alert_emails: alertEmails,
+          alert_subject: alertSubject,
+          alert_body: alertBody,
+          ...clienteData,
+        }),
+      }).catch(err => console.warn('[n8n] alerta dispatch failed:', err.message));
+    }
+
+    // 8. Responder OK al frontend
     res.json({ ok: true, nif });
 
   } catch (err) {

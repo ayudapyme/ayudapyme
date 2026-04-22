@@ -325,6 +325,13 @@ const MultiStepForm = () => {
         throw new Error(errorData.error || "No hemos podido enviar tus datos. Llámanos al 601 64 63 62 y te atendemos directamente.");
       }
       setIsSubmitted(true);
+      // Track conversion en Google Analytics
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "formulario_enviado", {
+          event_category: "conversion",
+          event_label: formPath,
+        });
+      }
     } catch (err: any) {
       console.error(err);
       setErrorMessage(err.message || "No hemos podido enviar tus datos. Llámanos al 601 64 63 62 y te atendemos directamente.");
